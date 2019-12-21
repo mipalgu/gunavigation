@@ -141,3 +141,9 @@ gu_arcspeed arcspeed_to_coordinate_on_arc(gu_coordinate coordinate, gu_arc arc)
   const gu_arcspeed speed = { actualTurnSpeed, actualForwardSpeed };
   return speed;
 }
+
+gu_arcspeed arcspeed_to_coordinate(gu_coordinate coordinate)
+{
+    gu_arc arc = arc_for_coordinate(coordinate);
+    return arcspeed_to_coordinate_on_arc(coordinate, arc);
+}

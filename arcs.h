@@ -121,4 +121,6 @@ gu_arc arc_for_coordinate(gu_coordinate coordinate);
 
 gu_arcspeed arcspeed_to_coordinate_on_arc(gu_coordinate coordinate, gu_arc arc);
 
+gu_arcspeed arcspeed_to_coordinate(gu_coordinate coordinate);
+
 #endif  /* GUNAVIGATION_ARCS_H */

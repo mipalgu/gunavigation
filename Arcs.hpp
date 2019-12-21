@@ -87,6 +87,19 @@ namespace GU
 
     };
 
+    struct ArcSpeed: public ::gu_arcspeed
+    {
+        ArcSpeed(::gu_coordinate coordinate): ArcSpeed(arcspeed_for_coordinate(coordinate)) {}
+
+        ArcSpeed(::gu_arcspeed speed): ArcSpeed(speed.turnSpeed, speed.forwardSpeed) {}
+
+        ArcSpeed(
+            int8_t _turnSpeed,
+            int16_t _forwardSpeed
+        ): ::gu_arcspeed { _turnSpeed, _forwardSpeed } {} 
+
+    };
+
 };
 
 #endif  /* ARCS_HPP */
