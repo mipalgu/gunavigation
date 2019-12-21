@@ -105,10 +105,20 @@ typedef struct gu_arc
 
 } gu_arc;
 
+typedef struct gu_arcspeed {
+
+    int8_t turnSpeed;
+
+    int16_t forwardSpeed;
+
+} gu_arcspeed;
+
 
 /**
  * Calculate the arc_parameters to a given coordinate.
  */
 gu_arc arc_for_coordinate(gu_coordinate coordinate);
+
+gu_arcspeed arcspeed_to_coordinate_on_arc(gu_coordinate coordinate, gu_arc arc);
 
 #endif  /* GUNAVIGATION_ARCS_H */

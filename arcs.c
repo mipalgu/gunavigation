@@ -109,3 +109,35 @@ gu_arc arc_for_coordinate(gu_coordinate coordinate)
   const gu_arc arc = {(uint16_t) returnDistance, turnSteps, straightSteps, (int8_t) maxTurnSpeed, (int16_t) maxForwardSpeed, f_to_rad_f(theta)};
   return arc;
 }
+
+gu_arcspeed arcspeed_to_coordinate_on_arc(gu_coordinate coordinate, gu_arc arc)
+{
+  const float turnSteps = isinf(arc.turnSteps) || isnan(arc.turnSteps) ? 0.0f : arc.turnSteps;
+  const float straightSteps = isinf(arc.straightSteps) || isnan(arc.straightSteps) ? 0.0f : arc.straightSteps;
+  if (turnSteps == 0.0f && straightSteps == 0.0f)
+  {
+      const gu_arcspeed speed = { 0.0f, 0.0f };
+      return speed;
+  }
+  if (turnSteps == 0.0f)
+  {
+      const gu_arcspeed speed = { 0, arc.maxForwardSpeed };
+      return speed;
+  }
+  if (straightSteps == 0.0f)
+  {
+      const gu_arcspeed speed = { arc.maxTurnSpeed, 0 };
+      return speed;
+  }
+  const float ratio = straightSteps / turnSteps;
+  const float inverseRatio = turnSteps / straightSteps;
+  const float forwardSpeed = ratio >= 1.0f ? ((float) arc.maxForwardSpeed) : ratio * ((float) arc.maxForwardSpeed);
+  float turnSpeed = ratio >= 1.0f ? inverseRatio * ((float) arc.maxTurnSpeed) : ((float) arc.maxTurnSpeed);
+  const float modifiedTurnSpeed = turnSpeed + turnSpeed * 0.1f;
+  turnSpeed = isnan(modifiedTurnSpeed) ? turnSpeed : modifiedTurnSpeed;
+  const int16_t actualForwardSpeed = MIN(arc.maxForwardSpeed, (int16_t) (roundf(forwardSpeed)));
+  int8_t actualTurnSpeed = MIN(arc.maxTurnSpeed, (int8_t) (roundf(turnSpeed)));
+  actualTurnSpeed = coordinate.direction < 0 ? -actualTurnSpeed : actualTurnSpeed;
+  const gu_arcspeed speed = { actualTurnSpeed, actualForwardSpeed };
+  return speed;
+}
