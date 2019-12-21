@@ -1,6 +1,6 @@
 /*
  * arcs.h 
- * gunavigation_utils 
+ * gunavigation 
  *
  * Created by Callum McColl on 20/12/2019.
  * Copyright © 2019 Callum McColl. All rights reserved.
@@ -56,8 +56,8 @@
  *
  */
 
-#ifndef GUNAVIGATION_UTILS_ARCS_H
-#define GUNAVIGATION_UTILS_ARCS_H
+#ifndef GUNAVIGATION_ARCS_H
+#define GUNAVIGATION_ARCS_H
 
 #include <stdint.h>
 #include <guunits/Coordinate.h>
@@ -111,4 +111,4 @@ typedef struct gu_arc
  */
 gu_arc arc_for_coordinate(gu_coordinate coordinate);
 
-#endif  /* GUNAVIGATION_UTILS_ARCS_H */
+#endif  /* GUNAVIGATION_ARCS_H */

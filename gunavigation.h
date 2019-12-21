@@ -1,6 +1,6 @@
 /*
- * gunavigation_utils.h 
- * gunavigation_utils 
+ * gunavigation.h 
+ * gunavigation
  *
  * Created by Callum McColl on 20/12/2019.
  * Copyright © 2019 Callum McColl. All rights reserved.
@@ -56,9 +56,9 @@
  *
  */
 
-#ifndef GUNAVIGATION_UTILS_H
-#define GUNAVIGATION_UTILS_H
+#ifndef GUNAVIGATION_H
+#define GUNAVIGATION_H
 
 
 
-#endif  /* GUNAVIGATION_UTILS_H */
+#endif  /* GUNAVIGATION_H */

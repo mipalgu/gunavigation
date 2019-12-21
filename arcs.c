@@ -1,6 +1,6 @@
 /*
  * arcs.c 
- * gunavigation_utils 
+ * gunavigation 
  *
  * Created by Callum McColl on 20/12/2019.
  * Copyright © 2019 Callum McColl. All rights reserved.
