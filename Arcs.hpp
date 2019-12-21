@@ -91,6 +91,8 @@ namespace GU
     {
         ArcSpeed(::gu_coordinate coordinate): ArcSpeed(arcspeed_to_coordinate(coordinate)) {}
 
+        ArcSpeed(::gu_coordinate coordinate, ::gu_arc arc): ArcSpeed(arcspeed_to_coordinate_on_arc(coordinate, arc)) {}
+
         ArcSpeed(::gu_arcspeed speed): ArcSpeed(speed.turnSpeed, speed.forwardSpeed) {}
 
         ArcSpeed(
