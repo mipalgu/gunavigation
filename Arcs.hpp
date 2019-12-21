@@ -72,7 +72,9 @@ namespace GU
     struct Arc: public ::gu_arc
     {
 
-        Arc(::gu_coordinate coordinate): Arc(arc_for_coordinate(coordinate)) {}
+        Arc(): ::gu_arc {} {}
+
+        Arc(::gu_coordinate coordinate): Arc(::arc_for_coordinate(coordinate)) {}
 
         Arc(::gu_arc arc): Arc(arc.segmentLength, arc.turnSteps, arc.straightSteps, arc.maxTurnSpeed, arc.maxForwardSpeed, arc.theta) {}
 
@@ -89,9 +91,11 @@ namespace GU
 
     struct ArcSpeed: public ::gu_arcspeed
     {
-        ArcSpeed(::gu_coordinate coordinate): ArcSpeed(arcspeed_to_coordinate(coordinate)) {}
+        ArcSpeed(): ::gu_arcspeed {} {}
 
-        ArcSpeed(::gu_coordinate coordinate, ::gu_arc arc): ArcSpeed(arcspeed_to_coordinate_on_arc(coordinate, arc)) {}
+        ArcSpeed(::gu_coordinate coordinate): ArcSpeed(::arcspeed_to_coordinate(coordinate)) {}
+
+        ArcSpeed(::gu_coordinate coordinate, ::gu_arc arc): ArcSpeed(::arcspeed_to_coordinate_on_arc(coordinate, arc)) {}
 
         ArcSpeed(::gu_arcspeed speed): ArcSpeed(speed.turnSpeed, speed.forwardSpeed) {}
 

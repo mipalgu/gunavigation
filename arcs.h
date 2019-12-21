@@ -59,6 +59,10 @@
 #ifndef GUNAVIGATION_ARCS_H
 #define GUNAVIGATION_ARCS_H
 
+#ifdef __cplusplus
+extern "C"{
+#endif
+
 #include <stdint.h>
 #include <guunits/Coordinate.h>
 
@@ -122,5 +126,9 @@ gu_arc arc_for_coordinate(gu_coordinate coordinate);
 gu_arcspeed arcspeed_to_coordinate_on_arc(gu_coordinate coordinate, gu_arc arc);
 
 gu_arcspeed arcspeed_to_coordinate(gu_coordinate coordinate);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif  /* GUNAVIGATION_ARCS_H */
