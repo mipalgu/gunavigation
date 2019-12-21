@@ -59,6 +59,6 @@
 #ifndef GUNAVIGATION_H
 #define GUNAVIGATION_H
 
-
+#include "arcs.h"
 
 #endif  /* GUNAVIGATION_H */
