@@ -89,7 +89,7 @@ namespace GU
 
     struct ArcSpeed: public ::gu_arcspeed
     {
-        ArcSpeed(::gu_coordinate coordinate): ArcSpeed(arcspeed_for_coordinate(coordinate)) {}
+        ArcSpeed(::gu_coordinate coordinate): ArcSpeed(arcspeed_to_coordinate(coordinate)) {}
 
         ArcSpeed(::gu_arcspeed speed): ArcSpeed(speed.turnSpeed, speed.forwardSpeed) {}
 
