@@ -6,6 +6,7 @@
 ALL_TARGETS=host-local robot-local
 
 C_SRCS!=ls *.c
+CPP_SRCS!=ls *.cpp
 ALL_HDRS!=ls *.h
 SPECIFIC_LIBS=-lguunits
 LOCAL=_LOCAL
