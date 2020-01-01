@@ -61,10 +61,10 @@
 #include <stdint.h>
 #include <math.h>
 
-#define FORWARD_MIN_ARC_SPEED 30.0f // mm/s
-#define FORWARD_MAX_ARC_SPEED 80.0f // mm/s
+#define FORWARD_MIN_ARC_SPEED 80.0f // mm/s
+#define FORWARD_MAX_ARC_SPEED 160.0f // mm/s
 #define TURN_MIN_ARC_SPEED 10.0f // degrees/s
-#define TURN_MAX_ARC_SPEED 40.0f // degrees/s
+#define TURN_MAX_ARC_SPEED 80.0f // degrees/s
 
 #define ABS_FORWARD_ARC_SPEED(distance) (MAX(MIN((distance / 2.0f), FORWARD_MAX_ARC_SPEED), FORWARD_MIN_ARC_SPEED))
 #define ABS_TURN_ARC_SPEED(theta) (MAX((MIN(TURN_MAX_ARC_SPEED, roundf(theta / 180.0f) * TURN_MAX_ARC_SPEED)), TURN_MIN_ARC_SPEED))
