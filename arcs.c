@@ -60,6 +60,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <math.h>
+#include <gu_util.h>
 
 #define FORWARD_MIN_ARC_SPEED 80.0f // mm/s
 #define FORWARD_MAX_ARC_SPEED 160.0f // mm/s
