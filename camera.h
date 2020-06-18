@@ -66,8 +66,8 @@
 extern "C" {
 #endif
 
-#define NAO_V5_TOP_CAMERA { 52.323f, 1.2f, 47.64f, 60.97f };
-#define NAO_V5_BOTTOM_CAMERA { 47.733f, -39.7f, 47.64f, 60.97f };
+#define NAO_V5_TOP_CAMERA { 52.323f, 58.71, 1.2f, 47.64f, 60.97f };
+#define NAO_V5_BOTTOM_CAMERA { 47.733f, 50.71, -39.7f, 47.64f, 60.97f };
 
 
 typedef struct gu_camera
@@ -79,12 +79,24 @@ typedef struct gu_camera
     centimetres_f height;
 
     /**
+     * The distance the camera is from the center point. A positive value
+     * indicates that the camera is in front of the center point while a
+     * negative value indicates that the camera is behind the center
+     * point.
+     *
+     * This property is useful for when the robot is mounted on a robot
+     * and distance calculations need to be calculated from the torso,
+     * not the camera.
+     */
+    centimetres_f centerOffset;
+
+    /**
      * The degree in which the camera is facing in the vertical direction.
      *
      * A positive value means that the camera is pointing more to the sky. A
      * negative value means that the camera is pointing more to the ground.
      */
-    degrees_f vOffset;
+    degrees_f vDirection;
 
     /**
      * The vertical field of view.

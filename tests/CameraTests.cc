@@ -87,7 +87,7 @@ namespace CGTEST {
 
     TEST_F(CameraCPPTests, RO5)
     {
-        GU::Camera camera = GU::Camera(1.0f, 2.0f, 3.0f, 4.0f);
+        GU::Camera camera = GU::Camera(1.0f, 1.5f, 2.0f, 3.0f, 4.0f);
         GU::Camera camera2 = GU::Camera(camera);
         ASSERT_EQ(camera, camera2);
         GU::Camera camera3 = camera2;
@@ -100,7 +100,8 @@ namespace CGTEST {
         ASSERT_NE(camera4, camera2);
         ASSERT_EQ(camera4, camera3);
         ASSERT_EQ(camera2.height(), 0.0f);
-        ASSERT_EQ(camera2.vOffset(), 0.0f);
+        ASSERT_EQ(camera2.centerOffset(), 0.0f);
+        ASSERT_EQ(camera2.vDirection(), 0.0f);
         ASSERT_EQ(camera2.vFov(), 0.0f);
         ASSERT_EQ(camera2.hFov(), 0.0f);
         GU::Camera camera5;
@@ -108,20 +109,24 @@ namespace CGTEST {
         ASSERT_NE(camera5, camera2);
         ASSERT_EQ(camera5, camera3);
         ASSERT_EQ(camera4.height(), 0.0f);
-        ASSERT_EQ(camera4.vOffset(), 0.0f);
+        ASSERT_EQ(camera4.centerOffset(), 0.0f);
+        ASSERT_EQ(camera4.vDirection(), 0.0f);
         ASSERT_EQ(camera4.vFov(), 0.0f);
         ASSERT_EQ(camera4.hFov(), 0.0f);
 #endif
     }
 
     TEST_F(CameraCPPTests, GettersSetters) {
-        GU::Camera camera = GU::Camera(1.0f, 2.0f, 3.0f, 4.0f);
+        GU::Camera camera = GU::Camera(1.0f, 1.5f, 2.0f, 3.0f, 4.0f);
         ASSERT_EQ(camera.height(), 1.0f);
         camera.set_height(-1.0f);
         ASSERT_EQ(camera.height(), -1.0f);
-        ASSERT_EQ(camera.vOffset(), 2.0f);
-        camera.set_vOffset(-2.0f);
-        ASSERT_EQ(camera.vOffset(), -2.0f);
+        ASSERT_EQ(camera.centerOffset(), 1.5f);
+        camera.set_centerOffset(-1.5f);
+        ASSERT_EQ(camera.centerOffset(), -1.5f);
+        ASSERT_EQ(camera.vDirection(), 2.0f);
+        camera.set_vDirection(-2.0f);
+        ASSERT_EQ(camera.vDirection(), -2.0f);
         ASSERT_EQ(camera.vFov(), 3.0f);
         camera.set_vFov(-3.0f);
         ASSERT_EQ(camera.vFov(), -3.0f);

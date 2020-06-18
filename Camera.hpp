@@ -68,7 +68,7 @@ namespace GU {
     struct Camera: private gu_camera {
 
         Camera();
-        Camera(centimetres_f, degrees_f, degrees_f, degrees_f);
+        Camera(centimetres_f, centimetres_f, degrees_f, degrees_f, degrees_f);
         Camera(const Camera& other);
 #if __cplusplus >= 199711L
         Camera(Camera&& other);
@@ -82,8 +82,11 @@ namespace GU {
         centimetres_f height() const;
         void set_height(const centimetres_f);
 
-        degrees_f vOffset() const;
-        void set_vOffset(const degrees_f);
+        centimetres_f centerOffset() const;
+        void set_centerOffset(const centimetres_f);
+
+        degrees_f vDirection() const;
+        void set_vDirection(const degrees_f);
 
         degrees_f vFov() const;
         void set_vFov(const degrees_f);

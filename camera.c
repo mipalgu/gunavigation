@@ -64,7 +64,8 @@
 bool gu_camera_equals(const gu_camera lhs, const gu_camera rhs, float tolerance)
 {
     return fabsf(cm_f_to_f(lhs.height) - cm_f_to_f(rhs.height)) <= tolerance
-        && fabsf(deg_f_to_f(lhs.vOffset) - deg_f_to_f(rhs.vOffset)) <= tolerance
+        && fabsf(cm_f_to_f(lhs.centerOffset) - cm_f_to_f(rhs.centerOffset)) <= tolerance
+        && fabsf(deg_f_to_f(lhs.vDirection) - deg_f_to_f(rhs.vDirection)) <= tolerance
         && fabsf(deg_f_to_f(lhs.vFov) - deg_f_to_f(rhs.vFov)) <= tolerance
         && fabsf(deg_f_to_f(lhs.hFov) - deg_f_to_f(rhs.hFov)) <= tolerance;
 }
