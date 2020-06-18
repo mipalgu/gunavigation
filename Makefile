@@ -6,10 +6,10 @@
 ALL_TARGETS=test robot-local
 
 C_SRCS!=ls *.c
-CC_SRCS!=ls *.cc
-CPP_SRCS!=ls *.cpp 
+CC_SRCS!=ls *.cc 2>/dev/null || :
+CPP_SRCS!=ls *.cpp 2>/dev/null || :
 ALL_HDRS!=ls *.h
-SPECIFIC_LIBS=-lguunits -lguvision_utils
+SPECIFIC_LIBS=-lguunits
 LOCAL=_LOCAL
 
 .include "../../mk/c++17.mk"
