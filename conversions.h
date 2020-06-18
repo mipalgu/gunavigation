@@ -73,6 +73,8 @@ bool px_coord_to_rr_coord_cam(const gu_pixel_coordinate, const gu_robot, relativ
 bool pct_coord_to_rr_coord(const gu_percent_coordinate, const gu_robot, relative_coordinate *);
 bool pct_coord_to_rr_coord_cam(const gu_percent_coordinate, const gu_robot, relative_coordinate *, const int);
 
+bool rr_coord_to_pct_coord(const relative_coordinate, const gu_robot, const int, gu_percent_coordinate *);
+
 #ifdef __cplusplus
 };
 #endif

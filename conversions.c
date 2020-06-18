@@ -90,11 +90,33 @@ bool pct_coord_to_rr_coord_cam(const gu_percent_coordinate coord, const gu_robot
     {
         return false;
     }
-    const degrees_f yaw = robot.headYaw + f_to_deg_f(pct_f_to_f(coord.x)) * (camera.hFov / 2.0f);
+    const degrees_f yaw = robot.headYaw - f_to_deg_f(pct_f_to_f(coord.x)) * (camera.hFov / 2.0f);
     const radians_f pitchRad = deg_f_to_rad_f(pitch);
     const radians_f yawRad = deg_f_to_rad_f(yaw);
     const float distance = cm_f_to_f(camera.height) * tanf(rad_f_to_f(pitchRad)) / cosf(rad_f_to_f(yawRad));
     out->distance = f_to_cm_u(fabsf(distance));
     out->direction = deg_f_to_deg_t(yaw);
+    return true;
+}
+
+bool rr_coord_to_pct_coord(const relative_coordinate coord, const gu_robot robot, const int cameraOffset, gu_percent_coordinate * out)
+{
+    const gu_camera camera = robot.cameras[cameraOffset];
+    const degrees_f yaw = deg_t_to_deg_f(coord.direction) - robot.headYaw;
+    const percent_f x = f_to_pct_f(deg_f_to_f(-yaw / (camera.hFov / 2.0f)));
+    if (x < -1.0f || x > 1.0f)
+    {
+        return false;
+    }
+    const radians_f yawRad = deg_f_to_rad_f(yaw);
+    const float frontDistance = cm_u_to_f(coord.distance) * cosf(rad_f_to_f(yawRad));
+    const degrees_f pitch = rad_f_to_deg_f(f_to_rad_f(atan2f(frontDistance, cm_f_to_f(camera.height)))) - camera.vDirection;
+    const percent_f y = f_to_pct_f(deg_f_to_f(pitch / (camera.vFov / 2.0f)));
+    if (y < -1.0f || y > 1.0f)
+    {
+        return false;
+    }
+    out->x = x;
+    out->y = y;
     return true;
 }
