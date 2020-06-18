@@ -6,7 +6,8 @@
 ALL_TARGETS=test robot-local
 
 C_SRCS!=ls *.c
-CPP_SRCS!=ls *.cpp
+CC_SRCS!=ls *.cc
+CPP_SRCS!=ls *.cpp 
 ALL_HDRS!=ls *.h
 SPECIFIC_LIBS=-lguunits -lguvision_utils
 LOCAL=_LOCAL
