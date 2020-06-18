@@ -1,8 +1,8 @@
 /*
- * camera.h 
+ * robot.c 
  * gunavigation 
  *
- * Created by Callum McColl on 18/06/2020.
+ * Created by Callum McColl on 19/06/2020.
  * Copyright © 2020 Callum McColl. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,67 +56,25 @@
  *
  */
 
-#ifndef CAMERA_H
-#define CAMERA_H
+#include "robot.h"
 
-#include <guunits/guunits.h>
 #include <stdbool.h>
+#include <math.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#define NAO_V5_TOP_CAMERA {52.323f, 58.71, 1.2f, 47.64f, 60.97f}
-#define NAO_V5_BOTTOM_CAMERA {47.733f, 50.71, -39.7f, 47.64f, 60.97f}
-
-#define PEPPER_TOP_CAMERA {115.3f, 8.68f, 0.0f, 44.3f, 55.2f}
-#define PEPPER_BOTTOM_CAMERA {105.15f, 9.36f, -40.0f, 44.3f, 55.2f}
-
-
-typedef struct gu_camera
+bool gu_robot_equals(const gu_robot lhs, const gu_robot rhs, float tolerance)
 {
-    /**
-     * The height from the ground to the middle of the camera.
-     */
-    centimetres_f height;
-
-    /**
-     * The distance the camera is from the center point. A positive value
-     * indicates that the camera is in front of the center point while a
-     * negative value indicates that the camera is behind the center
-     * point.
-     *
-     * This property is useful for when the robot is mounted on a robot
-     * and distance calculations need to be calculated from the torso,
-     * not the camera.
-     */
-    centimetres_f centerOffset;
-
-    /**
-     * The degree in which the camera is facing in the vertical direction.
-     *
-     * A positive value means that the camera is pointing more to the sky. A
-     * negative value means that the camera is pointing more to the ground.
-     */
-    degrees_f vDirection;
-
-    /**
-     * The vertical field of view.
-     */
-    degrees_f vFov;
-
-    /**
-     * The horizontal field of view.
-     */
-    degrees_f hFov;
-
-} gu_camera;
-
-bool gu_camera_equals(gu_camera, gu_camera, float);
-
-
-#ifdef __cplusplus
-};
-#endif
-
-#endif  /* CAMERA_H */
+    const bool headEqual = fabsf(deg_f_to_f(lhs.headPitch) - deg_f_to_f(rhs.headPitch)) <= tolerance
+        && fabsf(deg_f_to_f(lhs.headYaw) - deg_f_to_f(rhs.headYaw)) <= tolerance;
+    if (!headEqual || lhs.numCameras != rhs.numCameras)
+    {
+        return false;
+    }
+    for (int i = 0; i < lhs.numCameras; i++)
+    {
+        if (!gu_camera_equals(lhs.cameras[i], rhs.cameras[i], tolerance))
+        {
+            return false;
+        }
+    }
+    return true;
+}

@@ -1,6 +1,6 @@
 /*
- * camera.h 
- * gunavigation 
+ * robot_tests.cc 
+ * tests 
  *
  * Created by Callum McColl on 18/06/2020.
  * Copyright © 2020 Callum McColl. All rights reserved.
@@ -56,67 +56,43 @@
  *
  */
 
-#ifndef CAMERA_H
-#define CAMERA_H
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wglobal-constructors"
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
+#pragma clang diagnostic ignored "-Wshift-sign-overflow"
+#pragma clang diagnostic ignored "-Wused-but-marked-unused"
+#pragma clang diagnostic ignored "-Wdeprecated"
+#pragma clang diagnostic ignored "-Wunused-parameter"
+#pragma clang diagnostic ignored "-Wsign-compare"
+#pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+#pragma clang diagnostic ignored "-Wfloat-equal"
 
-#include <guunits/guunits.h>
-#include <stdbool.h>
+#include <gtest/gtest.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <gu_util.h>
+#include "../robot.h"
 
-#define NAO_V5_TOP_CAMERA {52.323f, 58.71, 1.2f, 47.64f, 60.97f}
-#define NAO_V5_BOTTOM_CAMERA {47.733f, 50.71, -39.7f, 47.64f, 60.97f}
+namespace CGTEST {
+    
+    class RobotTests: public ::testing::Test {
+    protected:
+        
+        virtual void SetUp() {
+        }
+        
+        virtual void TearDown() {
+        }
 
-#define PEPPER_TOP_CAMERA {115.3f, 8.68f, 0.0f, 44.3f, 55.2f}
-#define PEPPER_BOTTOM_CAMERA {105.15f, 9.36f, -40.0f, 44.3f, 55.2f}
+    };
 
+    TEST_F(RobotTests, Equality) {
+        const gu_robot nao = GU_NAO_V5_ROBOT(0.0f, 0.0f);
+        const gu_robot pepper = GU_PEPPER_ROBOT(0.0f, 0.0f);
+        ASSERT_TRUE(gu_robot_equals(nao, nao, 0.0001f));
+        ASSERT_TRUE(gu_robot_equals(pepper, pepper, 0.0001f));
+        ASSERT_FALSE(gu_robot_equals(nao, pepper, 0.0001f));
+    }
 
-typedef struct gu_camera
-{
-    /**
-     * The height from the ground to the middle of the camera.
-     */
-    centimetres_f height;
+}  // namespace
 
-    /**
-     * The distance the camera is from the center point. A positive value
-     * indicates that the camera is in front of the center point while a
-     * negative value indicates that the camera is behind the center
-     * point.
-     *
-     * This property is useful for when the robot is mounted on a robot
-     * and distance calculations need to be calculated from the torso,
-     * not the camera.
-     */
-    centimetres_f centerOffset;
-
-    /**
-     * The degree in which the camera is facing in the vertical direction.
-     *
-     * A positive value means that the camera is pointing more to the sky. A
-     * negative value means that the camera is pointing more to the ground.
-     */
-    degrees_f vDirection;
-
-    /**
-     * The vertical field of view.
-     */
-    degrees_f vFov;
-
-    /**
-     * The horizontal field of view.
-     */
-    degrees_f hFov;
-
-} gu_camera;
-
-bool gu_camera_equals(gu_camera, gu_camera, float);
-
-
-#ifdef __cplusplus
-};
-#endif
-
-#endif  /* CAMERA_H */
+#pragma clang diagnostic pop
