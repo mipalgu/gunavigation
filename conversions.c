@@ -1,8 +1,8 @@
 /*
- * conversions.h 
+ * conversions.c 
  * gunavigation 
  *
- * Created by Callum McColl on 18/06/2020.
+ * Created by Callum McColl on 19/06/2020.
  * Copyright © 2020 Callum McColl. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,25 +56,45 @@
  *
  */
 
-#ifndef CONVERSIONS_H
-#define CONVERSIONS_H
+#include "conversions.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include <guunits/guunits.h>
 #include <guvision_utils/guvision_utils.h>
-#include "relative_coordinate.h"
-#include "robot.h"
+#include <math.h>
 
-bool px_coord_to_rr_coord(const gu_pixel_coordinate, const gu_robot, relative_coordinate *);
-bool px_coord_to_rr_coord_cam(const gu_pixel_coordinate, const gu_robot, relative_coordinate *, const int);
-bool pct_coord_to_rr_coord(const gu_percent_coordinate, const gu_robot, relative_coordinate *);
-bool pct_coord_to_rr_coord_cam(const gu_percent_coordinate, const gu_robot, relative_coordinate *, const int);
+bool px_coord_to_rr_coord(const gu_pixel_coordinate coord, const gu_robot robot, relative_coordinate * out)
+{
+    return pct_coord_to_rr_coord(px_coord_to_pct_coord(coord), robot, out);
+}
 
-#ifdef __cplusplus
-};
-#endif
+bool px_coord_to_rr_coord_cam(const gu_pixel_coordinate coord, const gu_robot robot, relative_coordinate * out, const int cameraOffset)
+{
+    return pct_coord_to_rr_coord_cam(px_coord_to_pct_coord(coord), robot, out, cameraOffset);
+}
 
-#endif  /* CONVERSIONS_H */
+bool pct_coord_to_rr_coord(const gu_percent_coordinate coord, const gu_robot robot, relative_coordinate * out)
+{
+    for (int i = 0; i < robot.numCameras; i++) {
+        if (pct_coord_to_rr_coord_cam(coord, robot, out, i))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool pct_coord_to_rr_coord_cam(const gu_percent_coordinate coord, const gu_robot robot, relative_coordinate * out, const int cameraOffset)
+{
+    const gu_camera camera = robot.cameras[cameraOffset];
+    const degrees_f pitch = robot.headPitch + camera.vDirection + f_to_deg_f(pct_f_to_f(coord.y)) * (camera.vFov / 2.0f);
+    if (pitch >= 90.0f)
+    {
+        return false;
+    }
+    const degrees_f yaw = robot.headYaw + f_to_deg_f(pct_f_to_f(coord.x)) * (camera.hFov / 2.0f);
+    const radians_f pitchRad = deg_f_to_rad_f(pitch);
+    const radians_f yawRad = deg_f_to_rad_f(yaw);
+    const float distance = cm_f_to_f(camera.height) * tanf(rad_f_to_f(pitchRad)) / cosf(rad_f_to_f(yawRad));
+    out->distance = f_to_cm_u(fabsf(distance));
+    out->direction = deg_f_to_deg_t(yaw);
+    return true;
+}
