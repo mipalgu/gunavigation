@@ -1,6 +1,6 @@
 /*
- * relative_coordinate.h 
- * gunavigation 
+ * conversions_tests.cc 
+ * tests 
  *
  * Created by Callum McColl on 18/06/2020.
  * Copyright © 2020 Callum McColl. All rights reserved.
@@ -56,11 +56,46 @@
  *
  */
 
-#ifndef RELATIVE_COORDINATE_H
-#define RELATIVE_COORDINATE_H
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wglobal-constructors"
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
+#pragma clang diagnostic ignored "-Wshift-sign-overflow"
+#pragma clang diagnostic ignored "-Wused-but-marked-unused"
+#pragma clang diagnostic ignored "-Wdeprecated"
+#pragma clang diagnostic ignored "-Wunused-parameter"
+#pragma clang diagnostic ignored "-Wsign-compare"
+#pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+#pragma clang diagnostic ignored "-Wfloat-equal"
+
+#include <gtest/gtest.h>
 
 #include <guunits/Coordinate.h>
 
-typedef gu_coordinate relative_coordinate;
+#include <gu_util.h>
+#include "../conversions.h"
 
-#endif  /* RELATIVE_COORDINATE_H */
+namespace CGTEST {
+    
+    class ConversionsTests: public ::testing::Test {
+    protected:
+        
+        virtual void SetUp() {
+        }
+        
+        virtual void TearDown() {
+        }
+
+    };
+
+    void relative_equal(const gu_coordinate lhs, const gu_coordinate rhs)
+    {
+        ASSERT_EQ(lhs.direction(), rhs.direction());
+        ASSERT_EQ(lhs.distance(), rhs.distance());
+    }
+
+    TEST_F(ConversionsTests, ConvertsToCorrectRelativeCoordinate) {
+    }
+
+}  // namespace
+
+#pragma clang diagnostic pop

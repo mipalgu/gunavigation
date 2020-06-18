@@ -1,5 +1,5 @@
 /*
- * relative_coordinate.h 
+ * conversions.h 
  * gunavigation 
  *
  * Created by Callum McColl on 18/06/2020.
@@ -56,11 +56,21 @@
  *
  */
 
-#ifndef RELATIVE_COORDINATE_H
-#define RELATIVE_COORDINATE_H
+#ifndef CONVERSIONS_H
+#define CONVERSIONS_H
 
-#include <guunits/Coordinate.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-typedef gu_coordinate relative_coordinate;
+#include <guunits/guunits.h>
+#include <guvision_utils/guvision_utils.h>
 
-#endif  /* RELATIVE_COORDINATE_H */
+//relative_coordinate px_coord_to_rr_coord(pixel_coordinate);
+//relative_coordinate pct_coord_to_rr_coord(percent_coordinate);
+
+#ifdef __cplusplus
+};
+#endif
+
+#endif  /* CONVERSIONS_H */
