@@ -58,6 +58,33 @@
 
 #include "control.h"
 
+static gu_control makeReading(const gu_control previous, const gu_controller controller, const double reading, const double time, const gu_control_algorithm algorithm)
+{
+    const double newError = previous.target - reading;
+    const double derivativeTerm = (newError - previous.error) / time;
+    const double integralTerm = previous.totalError + newError * time;
+    double controllerOutput = 0.0;
+    switch (algorithm)
+    {
+        case ControlProportional: controllerOutput = proportional(controller.proportionalGain, newError);
+            break;
+        case ControlProportionalDerivative: controllerOutput = proportionalDerivative(controller.proportionalGain, newError, derivativeTerm, controller.derivativeGain);
+            break;
+        case ControlProportionalIntegralDerivative:
+            controllerOutput = proportionalIntegralDerivative(controller.proportionalGain, newError, derivativeTerm, controller.derivativeGain, integralTerm, controller.integralGain);
+            break;
+    }
+    gu_control newValue = {
+        previous.target,
+        reading,
+        newError,
+        previous.error,
+        integralTerm,
+        controllerOutput
+    };
+    return newValue;
+}
+
 double proportional(const double gain, const double error)
 {
     return gain * error;
@@ -76,56 +103,19 @@ double proportionalIntegralDerivative(const double gain, const double error, con
     return pd + integralGain * errorTotal;
 } 
 
-gu_control pControl(const gu_control value, const gu_controller controller)
+gu_control pControl(const gu_control value, const gu_controller controller, const double reading, const double time)
 {
-    const double output = proportional(controller.proportionalGain, value.error);
-    const double newCurrent = output + value.current;
-    const double newError = value.target - newCurrent;
-    gu_control newValue = {
-        value.target,
-        newCurrent,
-        newError,
-        value.error,
-        value.totalError + newError
-    };
-    return newValue;
+    return makeReading(value, controller, reading, time, ControlProportional);
 } 
 
-gu_control pdControl(const gu_control value, const gu_controller controller, const double time)
+gu_control pdControl(const gu_control value, const gu_controller controller, const double reading, const double time)
 {
-    const double output = proportionalDerivative(controller.proportionalGain, value.error, (value.error - value.lastError) / time, controller.derivativeGain);
-    const double newCurrent = output + value.current;
-    const double newError = value.target - newCurrent;
-    gu_control newValue = {
-        value.target,
-        newCurrent,
-        newError,
-        value.error,
-        value.totalError + newError * time
-    };
-    return newValue;
+    return makeReading(value, controller, reading, time, ControlProportionalDerivative);
 } 
 
-gu_control pidControl(const gu_control value, const gu_controller controller, const double time)
+gu_control pidControl(const gu_control value, const gu_controller controller, const double reading, const double time)
 {
-    const double output = proportionalIntegralDerivative(
-        controller.proportionalGain,
-        value.error,
-        (value.error - value.lastError) / time,
-        controller.derivativeGain,
-        value.totalError,
-        controller.integralGain
-    );
-    const double newCurrent = value.current + output;
-    const double newError = value.target - newCurrent;
-    gu_control newValue = {
-        value.target,
-        newCurrent,
-        newError,
-        value.error,
-        value.totalError + newError * time
-    };
-    return newValue;
+    return makeReading(value, controller, reading, time, ControlProportionalIntegralDerivative);
 }
 
 gu_control createControl(const double current, const double target)
@@ -136,10 +126,13 @@ gu_control createControl(const double current, const double target)
         current,
         error,
         0.0,
-        error
+        error,
+        0.0
     };
     return control;
 }
+
+
 
 
 

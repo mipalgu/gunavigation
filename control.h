@@ -64,37 +64,76 @@ extern "C" {
 #endif
 
 typedef struct gu_control {
-
+    
+    /**
+     * The target we are heading towards.
+     */
     double target;
 
+    /**
+     * The current value.
+     */
     double current;
 
+    /**
+     * The error between the target and the current value.
+     */
     double error;
     
+    /**
+     * The error before the current iteration of the control algorithm.
+     */
     double lastError;
 
+    /**
+     * The total error of all iterations of the control algorithm.
+     */
     double totalError;
+
+    double controllerOutput;
 
 } gu_control;
 
 typedef struct gu_controller {
-
+    
+    /**
+     * The proportional gain Kp.
+     */
     double proportionalGain;
 
+    /**
+     * The derivative gain Kd.
+     */
     double derivativeGain;
 
+    /**
+     * The integral gain Ki.
+     */
     double integralGain;
 
 } gu_controller;
 
+typedef enum gu_control_algorithm {
+    ControlProportional,
+    ControlProportionalDerivative,
+    ControlProportionalIntegralDerivative
+} gu_control_algorithm;
+
+gu_control createControl(const double current, const double target) __attribute__((const));
+
+/**
+ * Perform a single iteration of a control algorithm. Algorithms include: proportional, proportional derivative,
+ * and proportional integral derivative.
+ *
+ * You must specify the time between the current and the last iteration dt.
+ * The PID algorithm uses error e via: Kp * e + Kd * ((e2 - e1) / dt) + Ki * (allPreviousError + e * dt)
+ */
+gu_control pControl(const gu_control value, const gu_controller controller, const double reading, const double time) __attribute__((const));
+gu_control pdControl(const gu_control value, const gu_controller controller, const double reading, const double time) __attribute__((const));
+gu_control pidControl(const gu_control value, const gu_controller controller, const double reading, const double time) __attribute__((const));
+
 double proportional(const double gain, const double error) __attribute__((const));
-
-gu_control pControl(const gu_control value, const gu_controller controller) __attribute__((const));
-
 double proportionalDerivative(const double gain, const double error, const double errorGradient, const double gradientGain) __attribute__((const));
-
-gu_control pdControl(const gu_control value, const gu_controller controller, const double time) __attribute__((const));
-
 double proportionalIntegralDerivative(
     const double gain,
     const double error,
@@ -103,10 +142,6 @@ double proportionalIntegralDerivative(
     const double errorTotal,
     const double integralGain
 ) __attribute__((const));
-
-gu_control pidControl(const gu_control value, const gu_controller controller, const double time) __attribute__((const));
-
-gu_control createControl(const double current, const double target) __attribute__((const));
 
 #ifdef __cplusplus
 }
