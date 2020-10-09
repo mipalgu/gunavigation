@@ -119,7 +119,7 @@ typedef enum gu_control_algorithm {
     ControlProportionalIntegralDerivative
 } gu_control_algorithm;
 
-gu_control createControl(const double target) __attribute__((const));
+gu_control gu_create_control(const double target) __attribute__((const));
 
 /**
  * Perform a single iteration of a control algorithm. Algorithms include: proportional, proportional derivative,
@@ -128,13 +128,13 @@ gu_control createControl(const double target) __attribute__((const));
  * You must specify the time between the current and the last iteration dt.
  * The PID algorithm uses error e via: Kp * e + Kd * ((e2 - e1) / dt) + Ki * (allPreviousError + e * dt)
  */
-gu_control pControl(const gu_control value, const gu_controller controller, const double reading, const double time) __attribute__((const));
-gu_control pdControl(const gu_control value, const gu_controller controller, const double reading, const double time) __attribute__((const));
-gu_control pidControl(const gu_control value, const gu_controller controller, const double reading, const double time) __attribute__((const));
+gu_control gu_p_control(const gu_control value, const gu_controller controller, const double reading, const double time) __attribute__((const));
+gu_control gu_pd_control(const gu_control value, const gu_controller controller, const double reading, const double time) __attribute__((const));
+gu_control gu_pid_control(const gu_control value, const gu_controller controller, const double reading, const double time) __attribute__((const));
 
-double proportional(const double gain, const double error) __attribute__((const));
-double proportionalDerivative(const double gain, const double error, const double errorGradient, const double gradientGain) __attribute__((const));
-double proportionalIntegralDerivative(
+double gu_proportional(const double gain, const double error) __attribute__((const));
+double gu_proportional_derivative(const double gain, const double error, const double errorGradient, const double gradientGain) __attribute__((const));
+double gu_proportional_integral_derivative(
     const double gain,
     const double error,
     const double errorGradient,
