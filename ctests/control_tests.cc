@@ -62,7 +62,10 @@ namespace CGTEST {
     
     class ControlTests: public GUNavigationTests {};
 
-    TEST_F(ControlTests, Equality) {
+    TEST_F(ControlTests, Proportional) {
+        const double expected = 1.0;
+        const double actual = proportional(0.5, 0.0, 2.0);
+        ASSERT_NEAR(actual, expected, 0.00001);
     }
 
 }  // namespace
