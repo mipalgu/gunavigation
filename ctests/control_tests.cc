@@ -1,9 +1,9 @@
 /*
- * gunavigation.h 
- * gunavigation
+ * camera_tests.cc 
+ * tests 
  *
- * Created by Callum McColl on 20/12/2019.
- * Copyright © 2019 Callum McColl. All rights reserved.
+ * Created by Callum McColl on 18/06/2020.
+ * Copyright © 2020 Callum McColl. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -56,10 +56,13 @@
  *
  */
 
-#ifndef GUNAVIGATION_H
-#define GUNAVIGATION_H
+#include "gunavigation_tests.hpp"
 
-//#include "arcs.h"
-#include "control.h"
+namespace CGTEST {
+    
+    class ControlTests: public GUNavigationTests {};
 
-#endif  /* GUNAVIGATION_H */
+    TEST_F(ControlTests, Equality) {
+    }
+
+}  // namespace

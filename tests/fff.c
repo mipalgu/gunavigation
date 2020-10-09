@@ -1,9 +1,9 @@
 /*
- * gunavigation.h 
- * gunavigation
+ * fff.c 
+ * tests 
  *
- * Created by Callum McColl on 20/12/2019.
- * Copyright © 2019 Callum McColl. All rights reserved.
+ * Created by Callum McColl on 19/06/2020.
+ * Copyright © 2020 Callum McColl. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -56,10 +56,6 @@
  *
  */
 
-#ifndef GUNAVIGATION_H
-#define GUNAVIGATION_H
+#include "fff.h"
 
-//#include "arcs.h"
-#include "control.h"
-
-#endif  /* GUNAVIGATION_H */
+DEFINE_FFF_GLOBALS

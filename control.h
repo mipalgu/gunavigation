@@ -1,9 +1,9 @@
 /*
- * gunavigation.h 
- * gunavigation
+ * control.h 
+ * gunavigation 
  *
- * Created by Callum McColl on 20/12/2019.
- * Copyright © 2019 Callum McColl. All rights reserved.
+ * Created by Morgan McColl on 09/10/2020.
+ * Copyright © 2020 Morgan McColl. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -20,7 +20,7 @@
  * 3. All advertising materials mentioning features or use of this
  *    software must display the following acknowledgement:
  *
- *        This product includes software developed by Callum McColl.
+ *        This product includes software developed by Morgan McColl.
  *
  * 4. Neither the name of the author nor the names of contributors
  *    may be used to endorse or promote products derived from this
@@ -56,10 +56,27 @@
  *
  */
 
-#ifndef GUNAVIGATION_H
-#define GUNAVIGATION_H
+#ifndef CONTROL_H
+#define CONTROL_H
 
-//#include "arcs.h"
-#include "control.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif  /* GUNAVIGATION_H */
+double proportional(const double gain, const double previous, const double current) __attribute__((const));
+double proportionalDerivative(const double gain, const double previous, const double current, const double gradient, const double gradientGain) __attribute__((const));
+double proportionalIntegralDerivative(
+    const double gain,
+    const double previous,
+    const double current,
+    const double gradient,
+    const double gradientGain,
+    const double total,
+    const double integralGain
+) __attribute__((const));
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif  /* CONTROL_H */

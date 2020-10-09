@@ -1,9 +1,9 @@
 /*
- * gunavigation.h 
- * gunavigation
+ * control.c 
+ * gunavigation 
  *
- * Created by Callum McColl on 20/12/2019.
- * Copyright © 2019 Callum McColl. All rights reserved.
+ * Created by Morgan McColl on 09/10/2020.
+ * Copyright © 2020 Morgan McColl. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -20,7 +20,7 @@
  * 3. All advertising materials mentioning features or use of this
  *    software must display the following acknowledgement:
  *
- *        This product includes software developed by Callum McColl.
+ *        This product includes software developed by Morgan McColl.
  *
  * 4. Neither the name of the author nor the names of contributors
  *    may be used to endorse or promote products derived from this
@@ -56,10 +56,44 @@
  *
  */
 
-#ifndef GUNAVIGATION_H
-#define GUNAVIGATION_H
-
-//#include "arcs.h"
 #include "control.h"
 
-#endif  /* GUNAVIGATION_H */
+static double bound(const double original, const double min, const double max)
+{
+    if (original < min) return min;
+    if (original > max) return max;
+    return original;
+}
+
+double proportional(const double gain, const double previous, const double current)
+{
+    const double error = current - previous;
+    const double boundedGain = bound(gain, 0.0, 1.0);
+    return boundedGain * error;
+}
+
+double proportionalDerivative(const double gain, const double previous, const double current, const double gradient, const double gradientGain)
+{
+    const double p = proportional(gain, previous, current);
+    const double d = bound(gradientGain, 0.0, 1.0) * gradient;
+    return p + d;
+} 
+
+double proportionalIntegralDerivative(const double gain, const double previous, const double current, const double gradient, const double gradientGain, const double total, const double integralGain)
+{
+    const double pd = proportionalDerivative(gain, previous, current, gradient, gradientGain);
+    return pd + bound(integralGain, 0.0, 1.0) * total;
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
