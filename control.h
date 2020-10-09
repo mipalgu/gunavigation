@@ -119,7 +119,7 @@ typedef enum gu_control_algorithm {
     ControlProportionalIntegralDerivative
 } gu_control_algorithm;
 
-gu_control createControl(const double current, const double target) __attribute__((const));
+gu_control createControl(const double target) __attribute__((const));
 
 /**
  * Perform a single iteration of a control algorithm. Algorithms include: proportional, proportional derivative,
