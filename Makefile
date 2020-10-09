@@ -142,7 +142,12 @@ ctest:
 coverage-ctest:
 	$E${MAKE} ctest COVERAGE=yes
 
-cpptest: ${STDS:=cpp%test}
+
+.for std in ${STDS}
+STD_TARGETS+=cpp${std}test
+.endfor
+
+cpptest: ${STD_TARGETS}
 
 coverage-cpptest:
 	$E${MAKE} cpptest COVERAGE=yes
