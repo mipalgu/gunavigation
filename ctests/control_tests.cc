@@ -64,8 +64,120 @@ namespace CGTEST {
 
     TEST_F(ControlTests, Proportional) {
         const double expected = 1.0;
-        const double actual = proportional(0.5, 0.0, 2.0);
+        const double actual = proportional(0.5, 2.0);
         ASSERT_NEAR(actual, expected, 0.00001);
+    }
+
+    TEST_F(ControlTests, ProportionalDerivative) {
+        const double target = 6.0;
+        const double original = 1.0;
+        double current = original; //1.0
+        double error = target - current; //5.0
+        double errorGradient = error; //5.0
+        const double proportionalGain = 0.5;
+        const double gradientGain = 0.1;
+        const double expected = 3.0;
+        const double actual = proportionalDerivative(proportionalGain, error, errorGradient, gradientGain);
+        ASSERT_NEAR(actual, expected, 0.00001);
+        current += actual; //4.0
+        ASSERT_NEAR(current, 4.0, 0.00001);
+        double lastError = error; //5.0
+        error = target - current; //2.0
+        errorGradient = error - lastError; // -3.0
+        const double expected2 = 0.7;
+        const double actual2 = proportionalDerivative(proportionalGain, error, errorGradient, gradientGain);
+        ASSERT_NEAR(actual2, expected2, 0.00001);
+        current += actual2; //4.7
+        lastError = error; // 2.0
+        error = target - current; // 1.3
+        errorGradient = error - lastError; // -0.7
+        const double expected3 = 0.58;
+        const double actual3 = proportionalDerivative(proportionalGain, error, errorGradient, gradientGain);
+        ASSERT_NEAR(actual3, expected3, 0.00001);
+    }
+
+    TEST_F(ControlTests, ProportionalIntegralDerivative) {
+        const double target = 6.0;
+        const double original = 1.0;
+        double current = original;
+        double error = target - current; //5.0
+        double errorGradient = error; //5.0
+        double totalError = error; //5.0
+        const double proportionalGain = 0.5;
+        const double gradientGain = 0.1;
+        const double integralGain = 0.1;
+        const double expected = 3.5;
+        const double actual = proportionalIntegralDerivative(proportionalGain, error, errorGradient, gradientGain, totalError, integralGain);
+        ASSERT_NEAR(expected, actual, 0.00001);
+        current += actual; //4.5
+        double lastError = error; //5.0
+        error = target - current; // 1.5
+        errorGradient = error - lastError; // -3.5
+        totalError += error; // 6.5
+        const double expected2 = 1.05;
+        const double actual2 = proportionalIntegralDerivative(proportionalGain, error, errorGradient, gradientGain, totalError, integralGain);
+        ASSERT_NEAR(expected2, actual2, 0.00001);
+        current += actual2; // 5.55
+        lastError = error; // 1.5
+        error = target - current; // 0.45
+        errorGradient = error - lastError; // -1.05
+        totalError += error; // 6.95
+        const double expected3 = 0.815;
+        const double actual3 = proportionalIntegralDerivative(proportionalGain, error, errorGradient, gradientGain, totalError, integralGain);
+        ASSERT_NEAR(expected3, actual3, 0.00001);
+        current += actual3; // 6.365
+        lastError = error; // 0.45
+        error = target - current; // -0.365
+        errorGradient = error - lastError; // -0.815
+        totalError += error; // 6.585
+        const double expected4 = 0.3945;
+        const double actual4 = proportionalIntegralDerivative(proportionalGain, error, errorGradient, gradientGain, totalError, integralGain);
+        ASSERT_NEAR(expected4, actual4, 0.00001);
+    }
+
+    TEST_F(ControlTests, PControl) {
+        const gu_control val = createControl(1.0, 6.0); 
+        const gu_controller controller = {0.5, 0.0, 0.0};
+        const gu_control expected = {6.0, 3.5, 2.5, 5.0, 7.5};
+        const gu_control actual = pControl(val, controller);
+        ASSERT_NEAR(expected.target, actual.target, 0.00001);
+        ASSERT_NEAR(expected.current, actual.current, 0.00001);
+        ASSERT_NEAR(expected.error, actual.error, 0.00001);
+        ASSERT_NEAR(expected.lastError, actual.lastError, 0.00001);
+        ASSERT_NEAR(expected.totalError, actual.totalError, 0.00001);
+    }
+
+    TEST_F(ControlTests, PDControl) {
+        const gu_control val = createControl(1.0, 6.0); 
+        const gu_controller controller = {0.5, 0.1, 0.0};
+        const double dt = 0.5;
+        const gu_control expected = {6.0, 4.5, 1.5, 5.0, 5.75};
+        const gu_control actual = pdControl(val, controller, dt);
+        ASSERT_NEAR(expected.target, actual.target, 0.00001);
+        ASSERT_NEAR(expected.current, actual.current, 0.00001);
+        ASSERT_NEAR(expected.error, actual.error, 0.00001);
+        ASSERT_NEAR(expected.lastError, actual.lastError, 0.00001);
+        ASSERT_NEAR(expected.totalError, actual.totalError, 0.00001);
+    }
+
+    TEST_F(ControlTests, PIDControl) {
+        const gu_control val = createControl(1.0, 6.0); 
+        const gu_controller controller = {0.5, 0.1, 0.1};
+        const double dt = 0.5;
+        const gu_control expected = {6.0, 5.0, 1.0, 5.0, 5.5};
+        const gu_control actual = pidControl(val, controller, dt);
+        ASSERT_NEAR(expected.target, actual.target, 0.00001);
+        ASSERT_NEAR(expected.current, actual.current, 0.00001);
+        ASSERT_NEAR(expected.error, actual.error, 0.00001);
+        ASSERT_NEAR(expected.lastError, actual.lastError, 0.00001);
+        ASSERT_NEAR(expected.totalError, actual.totalError, 0.00001);
+        const gu_control expected2 = {6.0, 5.25, 0.75, 1.0, 5.875};
+        const gu_control actual2 = pidControl(expected, controller, dt);
+        ASSERT_NEAR(expected2.target, actual2.target, 0.00001);
+        ASSERT_NEAR(expected2.current, actual2.current, 0.00001);
+        ASSERT_NEAR(expected2.error, actual2.error, 0.00001);
+        ASSERT_NEAR(expected2.lastError, actual2.lastError, 0.00001);
+        ASSERT_NEAR(expected2.totalError, actual2.totalError, 0.00001);
     }
 
 }  // namespace

@@ -58,36 +58,88 @@
 
 #include "control.h"
 
-static double bound(const double original, const double min, const double max)
+double proportional(const double gain, const double error)
 {
-    if (original < min) return min;
-    if (original > max) return max;
-    return original;
+    return gain * error;
 }
 
-double proportional(const double gain, const double previous, const double current)
+double proportionalDerivative(const double gain, const double error, const double errorGradient, const double gradientGain)
 {
-    const double error = current - previous;
-    const double boundedGain = bound(gain, 0.0, 1.0);
-    return boundedGain * error;
-}
-
-double proportionalDerivative(const double gain, const double previous, const double current, const double gradient, const double gradientGain)
-{
-    const double p = proportional(gain, previous, current);
-    const double d = bound(gradientGain, 0.0, 1.0) * gradient;
+    const double p = proportional(gain, error);
+    const double d = gradientGain * errorGradient;
     return p + d;
 } 
 
-double proportionalIntegralDerivative(const double gain, const double previous, const double current, const double gradient, const double gradientGain, const double total, const double integralGain)
+double proportionalIntegralDerivative(const double gain, const double error, const double errorGradient, const double gradientGain, const double errorTotal, const double integralGain)
 {
-    const double pd = proportionalDerivative(gain, previous, current, gradient, gradientGain);
-    return pd + bound(integralGain, 0.0, 1.0) * total;
+    const double pd = proportionalDerivative(gain, error, errorGradient, gradientGain);
+    return pd + integralGain * errorTotal;
 } 
 
+gu_control pControl(const gu_control value, const gu_controller controller)
+{
+    const double output = proportional(controller.proportionalGain, value.error);
+    const double newCurrent = output + value.current;
+    const double newError = value.target - newCurrent;
+    gu_control newValue = {
+        value.target,
+        newCurrent,
+        newError,
+        value.error,
+        value.totalError + newError
+    };
+    return newValue;
+} 
 
+gu_control pdControl(const gu_control value, const gu_controller controller, const double time)
+{
+    const double output = proportionalDerivative(controller.proportionalGain, value.error, (value.error - value.lastError) / time, controller.derivativeGain);
+    const double newCurrent = output + value.current;
+    const double newError = value.target - newCurrent;
+    gu_control newValue = {
+        value.target,
+        newCurrent,
+        newError,
+        value.error,
+        value.totalError + newError * time
+    };
+    return newValue;
+} 
 
+gu_control pidControl(const gu_control value, const gu_controller controller, const double time)
+{
+    const double output = proportionalIntegralDerivative(
+        controller.proportionalGain,
+        value.error,
+        (value.error - value.lastError) / time,
+        controller.derivativeGain,
+        value.totalError,
+        controller.integralGain
+    );
+    const double newCurrent = value.current + output;
+    const double newError = value.target - newCurrent;
+    gu_control newValue = {
+        value.target,
+        newCurrent,
+        newError,
+        value.error,
+        value.totalError + newError * time
+    };
+    return newValue;
+}
 
+gu_control createControl(const double current, const double target)
+{
+    const double error = target - current;
+    gu_control control = {
+        target,
+        current,
+        error,
+        0.0,
+        error
+    };
+    return control;
+}
 
 
 

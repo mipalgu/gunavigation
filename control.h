@@ -63,17 +63,50 @@
 extern "C" {
 #endif
 
-double proportional(const double gain, const double previous, const double current) __attribute__((const));
-double proportionalDerivative(const double gain, const double previous, const double current, const double gradient, const double gradientGain) __attribute__((const));
+typedef struct gu_control {
+
+    double target;
+
+    double current;
+
+    double error;
+    
+    double lastError;
+
+    double totalError;
+
+} gu_control;
+
+typedef struct gu_controller {
+
+    double proportionalGain;
+
+    double derivativeGain;
+
+    double integralGain;
+
+} gu_controller;
+
+double proportional(const double gain, const double error) __attribute__((const));
+
+gu_control pControl(const gu_control value, const gu_controller controller) __attribute__((const));
+
+double proportionalDerivative(const double gain, const double error, const double errorGradient, const double gradientGain) __attribute__((const));
+
+gu_control pdControl(const gu_control value, const gu_controller controller, const double time) __attribute__((const));
+
 double proportionalIntegralDerivative(
     const double gain,
-    const double previous,
-    const double current,
-    const double gradient,
+    const double error,
+    const double errorGradient,
     const double gradientGain,
-    const double total,
+    const double errorTotal,
     const double integralGain
 ) __attribute__((const));
+
+gu_control pidControl(const gu_control value, const gu_controller controller, const double time) __attribute__((const));
+
+gu_control createControl(const double current, const double target) __attribute__((const));
 
 #ifdef __cplusplus
 }
