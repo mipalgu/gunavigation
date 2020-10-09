@@ -27,9 +27,9 @@ CXXSTDFL=-std=c++98
 
 ALL_TARGETS=test robot-local
 
-C_SRCS!=ls *.c
-CC_SRCS!=ls *.cc
-ALL_HDRS!=ls *.h *.hpp
+C_SRCS!=ls *.c 2>/dev/null || true
+CC_SRCS!=ls *.cc 2>/dev/null || true
+ALL_HDRS!=ls *.h *.hpp 2>/dev/null || true
 DOC_HDRS=${ALL_HDRS}
 SPECIFIC_LIBS+=-lm
 SPECIFIC_LIBS+=-lguunits
@@ -65,24 +65,26 @@ CODE_COVERAGE=yes
 SPECIFIC_CPPFLAGS+=-fprofile-arcs -ftest-coverage
 SPECIFIC_LDFLAGS+=--coverage
 
-LCOV!=which lcov &2>/dev/null
-GENHTML!=which genhtml &2>/dev/null
+GCOV!=which gcov 2>/dev/null
+LCOV!=which lcov 2>/dev/null
+GENHTML!=which genhtml 2>/dev/null
 
 generate-coverage-report:
+.if empty(GCOV)
+.	error You must install gcov in order to generate a code coverage report
+.endif
 .if empty(LCOV)
-	${SAY} "You must install lcov in order to generate a code coverage report."
+.	error You must install lcov in order to generate a code coverage report
 .endif
 .if empty(GENHTML)
-	${SAY} "You must install genhtml in order to generate a code coverage report."
+.	error You must install genhtml in order to generate a code coverage report
 .endif
-.if !empty(LCOV) && !empty(GENHTML)
-	rm -rf ${COVERAGE_BUILD_DIR}
-	mkdir -p ${COVERAGE_BUILD_DIR}
-	cp ${TEST_BUILD_DIR}/*.gc* ${COVERAGE_BUILD_DIR}/ || true 
-	cp build.host-local/*.gc* ${COVERAGE_BUILD_DIR}/ || true
-	cd ${COVERAGE_BUILD_DIR} && lcov --directory . --base-directory ${TEST_BUILD_DIR} --gcov-tool gcov --capture -o cov.info && genhtml --title "${COVERAGE_TITLE}" cov.info -o coverage || cd ${SRCDIR}
-.endif
-
+	${SAY} "*** Generating \"${COVERAGE_TITLE}\" Coverage Report."
+	$Erm -rf ${COVERAGE_BUILD_DIR}
+	$Emkdir -p ${COVERAGE_BUILD_DIR}
+	$Ecp ${TEST_BUILD_DIR}/*.gc* ${COVERAGE_BUILD_DIR}/ || true 
+	$Ecp build.host-local/*.gc* ${COVERAGE_BUILD_DIR}/ || true
+	$Ecd ${COVERAGE_BUILD_DIR} && ${LCOV} --directory . --base-directory ${TEST_BUILD_DIR} --gcov-tool ${GCOV} --capture -o cov.info && ${GENHTML} --title "${COVERAGE_TITLE}" cov.info -o coverage || cd ${SRCDIR}
 
 c-coverage:
 	$E${MAKE} generate-coverage-report TEST_BUILD_DIR="${SRCDIR}/ctests/build.host" COVERAGE_BUILD_DIR="coverage/c" COVERAGE_TITLE="C Tests Coverage"
@@ -123,16 +125,16 @@ build-lib:
 
 run-cpp-test:
 .ifndef TARGET
-	${SAY} "Testing C++ Implementation with C++${STD} Standard."
+	${SAY} "*** Testing C++ Implementation with C++${STD} Standard."
 	$Ecd ${SRCDIR}/tests && ${MAKE} build-test STD=${STD} EXTRA_WFLAGS="${CPP${STD}_EXTRA_WFLAGS}" BUILDDIR=build.host-${STD} LOCAL= MAKEFLAGS= SDIR=${SRCDIR} TESTLIBDIR=${SRCDIR}/build.host-local && cd ${SRCDIR} && ./tests/build.host-${STD}/tests
 .endif
 
 ctest:
 .ifndef TARGET
 	$E${MAKE} clean
-	${SAY} "Building Implementation with C99 Standard."
+	${SAY} "*** Building Implementation with C99 Standard."
 	$E${MAKE} build-lib
-	${SAY} "Testing C Implementation."
+	${SAY} "*** Testing C Implementation."
 	$Ecd ${SRCDIR}/ctests && ${MAKE} build-test BUILDDIR=build.host LOCAL= MAKEFLAGS= SDIR=${SRCDIR} TESTLIBDIR=${SRCDIR}/build.host-local && cd ${SRCDIR} && ./ctests/build.host/ctests
 .ifdef COVERAGE
 	$Ebmake c-coverage
@@ -155,7 +157,7 @@ coverage-cpptest:
 .for std in ${STDS}
 cpp${std}test: build-lib
 	$E${MAKE} clean
-	${SAY} "Building Implementation with C++${std} Standard."
+	${SAY} "*** Building Implementation with C++${std} Standard."
 	$E${MAKE} build-lib STD=${std}
 	$E${MAKE} run-cpp-test TESTING=yes STD=${std}
 .ifdef COVERAGE
