@@ -66,12 +66,12 @@ static gu_control makeReading(const gu_control previous, const gu_controller con
     double controllerOutput = 0.0;
     switch (algorithm)
     {
-        case ControlProportional: controllerOutput = proportional(controller.proportionalGain, newError);
+        case ControlProportional: controllerOutput = gu_proportional(controller.proportionalGain, newError);
             break;
-        case ControlProportionalDerivative: controllerOutput = proportionalDerivative(controller.proportionalGain, newError, derivativeTerm, controller.derivativeGain);
+        case ControlProportionalDerivative: controllerOutput = gu_proportional_derivative(controller.proportionalGain, newError, derivativeTerm, controller.derivativeGain);
             break;
         case ControlProportionalIntegralDerivative:
-            controllerOutput = proportionalIntegralDerivative(controller.proportionalGain, newError, derivativeTerm, controller.derivativeGain, integralTerm, controller.integralGain);
+            controllerOutput = gu_proportional_integral_derivative(controller.proportionalGain, newError, derivativeTerm, controller.derivativeGain, integralTerm, controller.integralGain);
             break;
     }
     gu_control newValue = {
@@ -85,40 +85,40 @@ static gu_control makeReading(const gu_control previous, const gu_controller con
     return newValue;
 }
 
-double proportional(const double gain, const double error)
+double gu_proportional(const double gain, const double error)
 {
     return gain * error;
 }
 
-double proportionalDerivative(const double gain, const double error, const double errorGradient, const double gradientGain)
+double gu_proportional_derivative(const double gain, const double error, const double errorGradient, const double gradientGain)
 {
-    const double p = proportional(gain, error);
+    const double p = gu_proportional(gain, error);
     const double d = gradientGain * errorGradient;
     return p + d;
 } 
 
-double proportionalIntegralDerivative(const double gain, const double error, const double errorGradient, const double gradientGain, const double errorTotal, const double integralGain)
+double gu_proportional_integral_derivative(const double gain, const double error, const double errorGradient, const double gradientGain, const double errorTotal, const double integralGain)
 {
-    const double pd = proportionalDerivative(gain, error, errorGradient, gradientGain);
+    const double pd = gu_proportional_derivative(gain, error, errorGradient, gradientGain);
     return pd + integralGain * errorTotal;
 } 
 
-gu_control pControl(const gu_control value, const gu_controller controller, const double reading, const double time)
+gu_control gu_p_control(const gu_control value, const gu_controller controller, const double reading, const double time)
 {
     return makeReading(value, controller, reading, time, ControlProportional);
 } 
 
-gu_control pdControl(const gu_control value, const gu_controller controller, const double reading, const double time)
+gu_control gu_pd_control(const gu_control value, const gu_controller controller, const double reading, const double time)
 {
     return makeReading(value, controller, reading, time, ControlProportionalDerivative);
 } 
 
-gu_control pidControl(const gu_control value, const gu_controller controller, const double reading, const double time)
+gu_control gu_pid_control(const gu_control value, const gu_controller controller, const double reading, const double time)
 {
     return makeReading(value, controller, reading, time, ControlProportionalIntegralDerivative);
 }
 
-gu_control createControl(const double target)
+gu_control gu_create_control(const double target)
 {
     gu_control control = {
         target,
