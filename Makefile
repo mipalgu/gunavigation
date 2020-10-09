@@ -44,7 +44,7 @@ PKGCONFIG_DESCRIPTION=Provides methods for calculating trajectories used in navi
 #WFLAGS=-Weverything wn-warning-option ${WERROR}
 WFLAGS=-Wall -Wno-unknown-pragmas -Wno-unknown-warning-option -Wno-c99-extensions -Wno-padded -Werror
 .ifndef TARGET
-WFLAGS+=-Weverything
+WFLAGS+=-Weverything -Wno-poison-system-directories
 .endif
 CPP03_EXTRA_WFLAGS=-Wno-c++98-compat -Wno-c++98-compat-pedantic -Wc++98-compat-extra-semi
 CPP11_EXTRA_WFLAGS=-Wno-c++98-compat -Wno-c++98-compat-pedantic -Wc++98-compat-extra-semi
