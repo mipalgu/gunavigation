@@ -118,14 +118,14 @@ gu_control gu_pid_control(const gu_control value, const gu_controller controller
     return makeReading(value, controller, reading, time, ControlProportionalIntegralDerivative);
 }
 
-gu_control gu_create_control(const double target)
+gu_control gu_create_control(const double current, const double target)
 {
     gu_control control = {
         target,
+        current,
+        target - current,
         0.0,
-        target,
-        0.0,
-        target,
+        target - current,
         0.0
     };
     return control;

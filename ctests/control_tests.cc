@@ -136,7 +136,7 @@ namespace CGTEST {
     }
 
     TEST_F(ControlTests, PControl) {
-        const gu_control val = gu_create_control(6.0); 
+        const gu_control val = gu_create_control(0.0, 6.0); 
         const gu_controller controller = {0.5, 0.0, 0.0};
         const double dt = 1.0;
         const gu_control expected = {6.0, 5.0, 1.0, 6.0, 7.0, 0.5};
@@ -150,7 +150,7 @@ namespace CGTEST {
     }
 
     TEST_F(ControlTests, PDControl) {
-        const gu_control val = gu_create_control(6.0); 
+        const gu_control val = gu_create_control(0.0, 6.0); 
         const gu_controller controller = {0.5, 0.1, 0.0};
         const double dt = 0.5;
         const gu_control expected = {6.0, 5.0, 1.0, 6.0, 6.5, -0.5};
@@ -164,7 +164,7 @@ namespace CGTEST {
     }
 
     TEST_F(ControlTests, PIDControl) {
-        const gu_control val = gu_create_control(6.0); 
+        const gu_control val = gu_create_control(0.0, 6.0); 
         const gu_controller controller = {0.5, 0.1, 0.1};
         const double dt = 0.5;
         const gu_control expected = {6.0, 5.0, 1.0, 6.0, 6.5, 0.15};
