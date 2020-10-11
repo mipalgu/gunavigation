@@ -74,8 +74,7 @@ static gu_odometry_status track_with_reset(gu_odometry_reading lastReading, gu_o
     double currentTurn = rad_d_to_d(currentReading.turn);
     const double currentForward = mm_t_to_d(currentReading.forward);
     const double currentLeft = mm_t_to_d(currentReading.left);
-    gu_cartesian_coordinate differentialCoordinate;
-    differentialCoordinate = calculate_difference(currentForward, currentLeft, rad_d_to_d(currentStatus.turn) + currentTurn);
+    const gu_cartesian_coordinate differentialCoordinate = calculate_difference(currentForward, currentLeft, rad_d_to_d(currentStatus.turn + lastReading.turn) + currentTurn);
     const millimetres_t newForward = currentStatus.forward + currentReading.forward;
     const millimetres_t newLeft = currentStatus.left + currentReading.left;
     const radians_d newTurn = currentReading.turn + lastReading.turn;
