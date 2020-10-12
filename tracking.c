@@ -59,16 +59,6 @@
 #include "tracking.h"
 #include "math.h"
 
-gu_relative_coordinate to_relative_coordinate(gu_odometry_status status)
-{
-    return status.relative_coordinate;
-}
-
-gu_cartesian_coordinate to_cartesian_coordinate(gu_odometry_status status)
-{
-    return status.cartesian_coordinate;
-}
-
 gu_cartesian_coordinate calculate_difference(double forward, double left, double turn)
 {
     const double halfPi = rad_d_to_d(deg_d_to_rad_d(d_to_deg_d(90.0)));
@@ -80,7 +70,7 @@ gu_cartesian_coordinate calculate_difference(double forward, double left, double
 
 static gu_odometry_status track_with_reset(gu_odometry_reading lastReading, gu_odometry_reading currentReading, gu_odometry_status currentStatus)
 {
-    const gu_cartesian_coordinate lastRelativeLocation = to_cartesian_coordinate(currentStatus);
+    const gu_cartesian_coordinate lastRelativeLocation = currentStatus.cartesian_coordinate;
     double currentTurn = rad_d_to_d(currentReading.turn);
     const double currentForward = mm_t_to_d(currentReading.forward);
     const double currentLeft = mm_t_to_d(currentReading.left);
@@ -95,7 +85,7 @@ static gu_odometry_status track_with_reset(gu_odometry_reading lastReading, gu_o
 
 static gu_odometry_status track_without_reset(gu_odometry_reading currentReading, gu_odometry_status currentStatus)
 {
-    const gu_cartesian_coordinate lastRelativeLocation = to_cartesian_coordinate(currentStatus);
+    const gu_cartesian_coordinate lastRelativeLocation = currentStatus.cartesian_coordinate;
     double currentTurn = rad_d_to_d(currentReading.turn);
     const double currentForward = mm_t_to_d(currentReading.forward);
     const double currentLeft = mm_t_to_d(currentReading.left);

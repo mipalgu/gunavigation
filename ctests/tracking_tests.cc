@@ -16,8 +16,8 @@ namespace CGTEST {
 
 
     static void compareStatus(gu_odometry_status expected, gu_odometry_status actual) {
-        gu_cartesian_coordinate expectedCoord = to_cartesian_coordinate(expected);
-        gu_cartesian_coordinate actualCoord = to_cartesian_coordinate(actual);
+        gu_cartesian_coordinate expectedCoord = expected.cartesian_coordinate;
+        gu_cartesian_coordinate actualCoord = actual.cartesian_coordinate;
         ASSERT_EQ(mm_t_to_i(expected.forward), mm_t_to_i(actual.forward));
         ASSERT_EQ(mm_t_to_i(expected.left), mm_t_to_i(actual.left));
         ASSERT_NEAR(rad_d_to_d(expected.turn), rad_d_to_d(actual.turn), 0.00001);
