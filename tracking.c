@@ -127,16 +127,14 @@ gu_odometry_status track_relative_coordinate(
     const gu_odometry_status currentStatus
 )
 {
-    gu_relative_coordinate relativeCoordinate = to_relative_coordinate(currentStatus);
+    gu_relative_coordinate relativeCoordinate = currentStatus.relative_coordinate;
     gu_cartesian_coordinate cartesianCoordinate = rr_coord_to_cartesian_coord(relativeCoordinate);
-    gu_odometry_status newStatus = {currentStatus.forward, currentStatus.left, currentStatus.turn, {}, {}};
-    newStatus.cartesian_coordinate = cartesianCoordinate;
-    const gu_odometry_status calculatedStatus = track_coordinate(lastReading, currentReading, newStatus);
-    gu_cartesian_coordinate calculatedCoordinate = to_cartesian_coordinate(calculatedStatus);
+    const gu_odometry_status newStatus = {currentStatus.forward, currentStatus.left, currentStatus.turn, cartesianCoordinate, {}};
+    gu_odometry_status calculatedStatus = track_coordinate(lastReading, currentReading, newStatus);
+    gu_cartesian_coordinate calculatedCoordinate = calculatedStatus.cartesian_coordinate;
     gu_relative_coordinate calculatedRelCoord = cartesian_coord_to_rr_coord(calculatedCoordinate); 
-    gu_odometry_status relStatus = {calculatedStatus.forward, calculatedStatus.left, calculatedStatus.turn, {}, {}};
-    relStatus.relative_coordinate = calculatedRelCoord;
-    return relStatus;
+    calculatedStatus.relative_coordinate = calculatedRelCoord;
+    return calculatedStatus;
 }
 
 

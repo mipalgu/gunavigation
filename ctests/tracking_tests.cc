@@ -57,6 +57,22 @@ namespace CGTEST {
         compareStatus(expected, actual);
     }
 
+    TEST_F(TrackingTests, TrackRelativeCoordinate) {
+        gu_odometry_reading lastReading = {100, 200, deg_d_to_rad_d(d_to_deg_d(20.0)), 0};
+        gu_odometry_reading currentReading = {400, 600, deg_d_to_rad_d(d_to_deg_d(35.0)), 0};
+        gu_cartesian_coordinate coord = {73, 150};
+        gu_relative_coordinate relCoord = cartesian_coord_to_rr_coord(coord); 
+        gu_odometry_status currentStatus = {100, 200, deg_d_to_rad_d(d_to_deg_d(10.0)), {}, relCoord};
+        gu_cartesian_coordinate expectedCoord = {80, 100}; 
+        gu_relative_coordinate expectedRelative = cartesian_coord_to_rr_coord(expectedCoord);
+        gu_odometry_status expected = {400, 600, deg_d_to_rad_d(d_to_deg_d(10.0)), expectedCoord, expectedRelative};
+        gu_odometry_status actual = track_relative_coordinate(lastReading, currentReading, currentStatus);
+        compareStatus(expected, actual);
+        gu_relative_coordinate actualRelative = actual.relative_coordinate;
+        ASSERT_EQ(mm_u_to_i(expectedRelative.distance), mm_u_to_i(actualRelative.distance));
+        ASSERT_NEAR(deg_d_to_d(expectedRelative.direction), deg_d_to_d(actualRelative.direction), 0.00001);
+    }
+
 
 
 
