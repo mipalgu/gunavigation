@@ -67,22 +67,22 @@ extern "C" {
 #include <gucoordinates/gucoordinates.h>
 
 typedef struct gu_odometry_reading {
-    millimetres_t forward;
+    const millimetres_t forward;
 
-    millimetres_t left;
+    const millimetres_t left;
 
-    radians_d turn;
+    const radians_d turn;
 
-    uint8_t resetCounter;
+    const uint8_t resetCounter;
 
 } gu_odometry_reading;
 
 typedef struct gu_odometry_status {
-    millimetres_t forward;
+    const millimetres_t forward;
 
-    millimetres_t left;
+    const millimetres_t left;
 
-    radians_d turn;
+    const radians_d turn;
 
     void *tracked_coordinate;
 

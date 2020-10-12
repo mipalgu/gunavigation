@@ -96,8 +96,8 @@ static gu_odometry_status track_with_reset(gu_odometry_reading lastReading, gu_o
     gu_cartesian_coordinate newCoordinate = {lastRelativeLocation.x - differentialCoordinate.x, lastRelativeLocation.y - differentialCoordinate.y};
     printf("NewCoordinate: (%d, %d)\n", cm_t_to_i(newCoordinate.x), cm_t_to_i(newCoordinate.y));
     gu_odometry_status newStatus = {newForward, newLeft, newTurn, &newCoordinate};
-    gu_cartesian_coordinate finishedCoord = to_cartesian_coordinate(newStatus);
-    printf("FinishedCoordinate: (%d, %d)\n", finishedCoord.x, finishedCoord.y);
+    //gu_cartesian_coordinate fakeCoord = to_cartesian_coordinate(newStatus);
+    //printf("%d %d\n", fakeCoord.x, fakeCoord.y);
     return newStatus;
 }
 
