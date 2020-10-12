@@ -58,6 +58,19 @@
 
 #include "tracking.h"
 #include "math.h"
+#include <stdio.h>
+
+gu_relative_coordinate to_relative_coordinate(gu_odometry_status status)
+{
+    gu_relative_coordinate *coord = (gu_relative_coordinate*)status.tracked_coordinate;
+    return *coord;
+}
+
+gu_cartesian_coordinate to_cartesian_coordinate(gu_odometry_status status)
+{
+    gu_cartesian_coordinate *coord = (gu_cartesian_coordinate*)status.tracked_coordinate;
+    return *coord;
+}
 
 gu_cartesian_coordinate calculate_difference(double forward, double left, double turn)
 {
@@ -70,32 +83,36 @@ gu_cartesian_coordinate calculate_difference(double forward, double left, double
 
 static gu_odometry_status track_with_reset(gu_odometry_reading lastReading, gu_odometry_reading currentReading, gu_odometry_status currentStatus)
 {
-    const gu_cartesian_coordinate *lastRelativeLocation = (gu_cartesian_coordinate *)currentStatus.tracked_coordinate;
+    const gu_cartesian_coordinate lastRelativeLocation = to_cartesian_coordinate(currentStatus);
+    printf("\n\nlastRelativeLocation: (%d, %d)\n", cm_t_to_i(lastRelativeLocation.x), cm_t_to_i(lastRelativeLocation.y));
     double currentTurn = rad_d_to_d(currentReading.turn);
     const double currentForward = mm_t_to_d(currentReading.forward);
     const double currentLeft = mm_t_to_d(currentReading.left);
     const gu_cartesian_coordinate differentialCoordinate = calculate_difference(currentForward, currentLeft, rad_d_to_d(currentStatus.turn + lastReading.turn) + currentTurn);
+    printf("DifferentialCoordinate: (%d, %d)\n", mm_t_to_i(differentialCoordinate.x), mm_t_to_i(differentialCoordinate.y));
     const millimetres_t newForward = currentStatus.forward + currentReading.forward;
     const millimetres_t newLeft = currentStatus.left + currentReading.left;
-    const radians_d newTurn = currentReading.turn + lastReading.turn;
-    gu_cartesian_coordinate newCoordinate = {lastRelativeLocation->x - differentialCoordinate.x, lastRelativeLocation->y - differentialCoordinate.y};
+    const radians_d newTurn = currentStatus.turn + lastReading.turn;
+    gu_cartesian_coordinate newCoordinate = {lastRelativeLocation.x - differentialCoordinate.x, lastRelativeLocation.y - differentialCoordinate.y};
+    printf("NewCoordinate: (%d, %d)\n", cm_t_to_i(newCoordinate.x), cm_t_to_i(newCoordinate.y));
     gu_odometry_status newStatus = {newForward, newLeft, newTurn, &newCoordinate};
+    gu_cartesian_coordinate finishedCoord = to_cartesian_coordinate(newStatus);
+    printf("FinishedCoordinate: (%d, %d)\n", finishedCoord.x, finishedCoord.y);
     return newStatus;
 }
 
 static gu_odometry_status track_without_reset(gu_odometry_reading currentReading, gu_odometry_status currentStatus)
 {
-    const gu_cartesian_coordinate *lastRelativeLocation = (gu_cartesian_coordinate *)currentStatus.tracked_coordinate;
+    const gu_cartesian_coordinate lastRelativeLocation = to_cartesian_coordinate(currentStatus);
     double currentTurn = rad_d_to_d(currentReading.turn);
     const double currentForward = mm_t_to_d(currentReading.forward);
     const double currentLeft = mm_t_to_d(currentReading.left);
-    gu_cartesian_coordinate differentialCoordinate;
     double dForward = currentForward - mm_t_to_d(currentStatus.forward);
     double dLeft = currentLeft - mm_t_to_d(currentStatus.left);
-    differentialCoordinate = calculate_difference(dForward, dLeft, rad_d_to_d(currentStatus.turn) + currentTurn);
+    const gu_cartesian_coordinate differentialCoordinate = calculate_difference(dForward, dLeft, rad_d_to_d(currentStatus.turn) + currentTurn);
     const millimetres_t newForward = d_to_mm_t(dForward) + currentStatus.forward;
     const millimetres_t newLeft = d_to_mm_t(dLeft) + currentStatus.left;
-    gu_cartesian_coordinate newCoordinate = {lastRelativeLocation->x - differentialCoordinate.x, lastRelativeLocation->y - differentialCoordinate.y};
+    gu_cartesian_coordinate newCoordinate = {lastRelativeLocation.x - differentialCoordinate.x, lastRelativeLocation.y - differentialCoordinate.y};
     gu_odometry_status newStatus = {newForward, newLeft, currentStatus.turn, &newCoordinate};
     return newStatus;
 }
@@ -118,12 +135,12 @@ gu_odometry_status track_relative_coordinate(
     const gu_odometry_status currentStatus
 )
 {
-    gu_relative_coordinate *relativeCoordinate = (gu_relative_coordinate *)currentStatus.tracked_coordinate;
-    gu_cartesian_coordinate cartesianCoordinate = rr_coord_to_cartesian_coord(*relativeCoordinate);
+    gu_relative_coordinate relativeCoordinate = to_relative_coordinate(currentStatus);
+    gu_cartesian_coordinate cartesianCoordinate = rr_coord_to_cartesian_coord(relativeCoordinate);
     const gu_odometry_status newStatus = {currentStatus.forward, currentStatus.left, currentStatus.turn, &cartesianCoordinate};
     const gu_odometry_status calculatedStatus = track_coordinate(lastReading, currentReading, newStatus);
-    gu_cartesian_coordinate *calculatedCoordinate = (gu_cartesian_coordinate *)calculatedStatus.tracked_coordinate;
-    gu_relative_coordinate calculatedRelCoord = cartesian_coord_to_rr_coord(*calculatedCoordinate); 
+    gu_cartesian_coordinate calculatedCoordinate = to_cartesian_coordinate(calculatedStatus);
+    gu_relative_coordinate calculatedRelCoord = cartesian_coord_to_rr_coord(calculatedCoordinate); 
     const gu_odometry_status relStatus = {calculatedStatus.forward, calculatedStatus.left, calculatedStatus.turn, &calculatedRelCoord};
     return relStatus;
 }
