@@ -104,6 +104,18 @@ gu_odometry_status track_relative_coordinate(
     const gu_odometry_status currentStatus
 ) __attribute__((const));
 
+gu_odometry_status track_self(
+    const gu_odometry_reading lastReading,
+    const gu_odometry_reading currentReading,
+    const gu_odometry_status currentStatus
+) __attribute__((const));
+
+gu_odometry_status track_self_relative(
+    const gu_odometry_reading lastReading,
+    const gu_odometry_reading currentReading,
+    const gu_odometry_status currentStatus
+) __attribute__((const));
+
 #ifdef __cplusplus
 }
 #endif
