@@ -113,12 +113,6 @@ typedef struct gu_controller {
 
 } gu_controller;
 
-typedef enum gu_control_algorithm {
-    ControlProportional,
-    ControlProportionalDerivative,
-    ControlProportionalIntegralDerivative
-} gu_control_algorithm;
-
 gu_control gu_create_control(const double current, const double target) __attribute__((const));
 
 /**

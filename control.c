@@ -58,6 +58,12 @@
 
 #include "control.h"
 
+typedef enum gu_control_algorithm {
+    ControlProportional,
+    ControlProportionalDerivative,
+    ControlProportionalIntegralDerivative
+} gu_control_algorithm;
+
 static gu_control makeReading(const gu_control previous, const gu_controller controller, const double reading, const double time, const gu_control_algorithm algorithm)
 {
     const double newError = previous.target - reading;
