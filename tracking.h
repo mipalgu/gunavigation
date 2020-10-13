@@ -92,6 +92,8 @@ typedef struct gu_odometry_status {
 
 gu_cartesian_coordinate calculate_difference(double forward, double left, double turn) __attribute__((const));
 
+gu_relative_coordinate calculate_difference_relative(double forward, double left, double turn) __attribute__((const));
+
 gu_odometry_status track_coordinate(
     const gu_odometry_reading lastReading,
     const gu_odometry_reading currentReading,

@@ -35,6 +35,18 @@ namespace CGTEST {
         ASSERT_EQ(expected.y, actual.y);
     }
 
+    TEST_F(TrackingTests, CalculateDifferenceRelative) {
+        double forward = 300.0;
+        double left = 400.0;
+        double turn = rad_d_to_d(deg_d_to_rad_d(d_to_deg_d(45.0)));
+        gu_cartesian_coordinate expectedCartesian = {-7, 50};
+        gu_relative_coordinate expected = cartesian_coord_to_rr_coord(expectedCartesian);
+        gu_relative_coordinate actual = calculate_difference_relative(forward, left, turn);
+        ASSERT_EQ(expected.distance, actual.distance);
+        ASSERT_EQ(expected.direction, actual.direction);
+
+    }
+
     TEST_F(TrackingTests, TrackWithReset) {
         gu_odometry_reading lastReading = {31231, 432423, deg_d_to_rad_d(d_to_deg_d(20.0)), 0};
         gu_odometry_reading currentReading = {300, 400, deg_d_to_rad_d(d_to_deg_d(15.0)), 1};

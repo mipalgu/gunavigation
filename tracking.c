@@ -68,6 +68,11 @@ gu_cartesian_coordinate calculate_difference(double forward, double left, double
     return differentialCoordinate;
 }
 
+gu_relative_coordinate calculate_difference_relative(double forward, double left, double turn)
+{
+    return cartesian_coord_to_rr_coord(calculate_difference(forward, left, turn));
+}
+
 static gu_odometry_status track_with_reset(gu_odometry_reading lastReading, gu_odometry_reading currentReading, gu_odometry_status currentStatus, bool isSelf)
 {
     const gu_cartesian_coordinate lastRelativeLocation = currentStatus.cartesian_coordinate;
