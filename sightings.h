@@ -71,9 +71,10 @@ typedef struct gu_sighting {
 
     uint64_t frameNumber;
 
-}
+} gu_sighting;
 
 #ifdef __cplusplus
 }
 #endif
+
 #endif  /* SIGHTINGS_H */
