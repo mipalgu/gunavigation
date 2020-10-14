@@ -53,7 +53,7 @@ namespace CGTEST {
         gu_cartesian_coordinate coord = {73, 150};
         gu_odometry_status currentStatus = {100, 20, deg_d_to_rad_d(d_to_deg_d(10.0)), coord, {}};
         gu_cartesian_coordinate expectedCoord = {80, 100};
-        gu_odometry_status expected = {400, 420, deg_d_to_rad_d(d_to_deg_d(30.0)), expectedCoord, {}};
+        gu_odometry_status expected = {300, 400, deg_d_to_rad_d(d_to_deg_d(30.0)), expectedCoord, {}};
         gu_odometry_status actual = track_coordinate(lastReading, currentReading, currentStatus);
         compareStatus(expected, actual);
     }
@@ -91,7 +91,7 @@ namespace CGTEST {
         gu_cartesian_coordinate coord = {73, 150};
         gu_odometry_status currentStatus = {100, 20, deg_d_to_rad_d(d_to_deg_d(10.0)), coord, {}};
         gu_cartesian_coordinate expectedCoord = {66, 200};
-        gu_odometry_status expected = {400, 420, deg_d_to_rad_d(d_to_deg_d(30.0)), expectedCoord, {}};
+        gu_odometry_status expected = {300, 400, deg_d_to_rad_d(d_to_deg_d(30.0)), expectedCoord, {}};
         gu_odometry_status actual = track_self(lastReading, currentReading, currentStatus);
         compareStatus(expected, actual);
     }

@@ -1,9 +1,9 @@
 /*
- * gunavigation.h 
- * gunavigation
+ * filtering.h 
+ * gunavigation 
  *
- * Created by Callum McColl on 20/12/2019.
- * Copyright © 2019 Callum McColl. All rights reserved.
+ * Created by Morgan McColl on 14/10/2020.
+ * Copyright © 2020 Morgan McColl. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -20,7 +20,7 @@
  * 3. All advertising materials mentioning features or use of this
  *    software must display the following acknowledgement:
  *
- *        This product includes software developed by Callum McColl.
+ *        This product includes software developed by Morgan McColl.
  *
  * 4. Neither the name of the author nor the names of contributors
  *    may be used to endorse or promote products derived from this
@@ -56,13 +56,26 @@
  *
  */
 
-#ifndef GUNAVIGATION_H
-#define GUNAVIGATION_H
+#ifndef FILTERING_H
+#define FILTERING_H
 
-//#include "arcs.h"
-#include "control.h"
-#include "tracking.h"
-#include "sightings.h"
-#include "filtering.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif  /* GUNAVIGATION_H */
+typedef struct gu_kalman_object {
+    
+    double observable;
+
+    double variance;
+
+} gu_kalman_object;
+
+gu_kalman_object kalman_filter(gu_kalman_object object, gu_kalman_object expectedChange, gu_kalman_object sensorReading) __attribute__((const));
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif  /* FILTERING_H */
