@@ -131,7 +131,7 @@ gu_control gu_create_control(const double current, const double target)
         current,
         target - current,
         0.0,
-        target - current,
+        0.0,
         0.0
     };
     return control;
