@@ -88,6 +88,8 @@ typedef struct gu_odometry_status {
 
     gu_relative_coordinate relative_coordinate;
 
+    gu_odometry_reading last_reading;
+
 } gu_odometry_status;
 
 gu_cartesian_coordinate calculate_difference(double forward, double left, double turn) __attribute__((const));
@@ -95,25 +97,21 @@ gu_cartesian_coordinate calculate_difference(double forward, double left, double
 gu_relative_coordinate calculate_difference_relative(double forward, double left, double turn) __attribute__((const));
 
 gu_odometry_status track_coordinate(
-    const gu_odometry_reading lastReading,
     const gu_odometry_reading currentReading,
     const gu_odometry_status currentStatus
 ) __attribute__((const));
 
 gu_odometry_status track_relative_coordinate(
-    const gu_odometry_reading lastReading,
     const gu_odometry_reading currentReading,
     const gu_odometry_status currentStatus
 ) __attribute__((const));
 
 gu_odometry_status track_self(
-    const gu_odometry_reading lastReading,
     const gu_odometry_reading currentReading,
     const gu_odometry_status currentStatus
 ) __attribute__((const));
 
 gu_odometry_status track_self_relative(
-    const gu_odometry_reading lastReading,
     const gu_odometry_reading currentReading,
     const gu_odometry_status currentStatus
 ) __attribute__((const));

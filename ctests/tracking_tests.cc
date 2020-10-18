@@ -51,10 +51,10 @@ namespace CGTEST {
         gu_odometry_reading lastReading = {31231, 432423, deg_d_to_rad_d(d_to_deg_d(20.0)), 0};
         gu_odometry_reading currentReading = {300, 400, deg_d_to_rad_d(d_to_deg_d(15.0)), 1};
         gu_cartesian_coordinate coord = {73, 150};
-        gu_odometry_status currentStatus = {100, 20, deg_d_to_rad_d(d_to_deg_d(10.0)), coord, {}};
+        gu_odometry_status currentStatus = {100, 20, deg_d_to_rad_d(d_to_deg_d(10.0)), coord, {}, lastReading};
         gu_cartesian_coordinate expectedCoord = {80, 100};
         gu_odometry_status expected = {300, 400, deg_d_to_rad_d(d_to_deg_d(30.0)), expectedCoord, {}};
-        gu_odometry_status actual = track_coordinate(lastReading, currentReading, currentStatus);
+        gu_odometry_status actual = track_coordinate(currentReading, currentStatus);
         compareStatus(expected, actual);
     }
 
@@ -62,10 +62,10 @@ namespace CGTEST {
         gu_odometry_reading lastReading = {100, 200, deg_d_to_rad_d(d_to_deg_d(20.0)), 0};
         gu_odometry_reading currentReading = {400, 600, deg_d_to_rad_d(d_to_deg_d(35.0)), 0};
         gu_cartesian_coordinate coord = {73, 150};
-        gu_odometry_status currentStatus = {100, 200, deg_d_to_rad_d(d_to_deg_d(10.0)), coord, {}};
+        gu_odometry_status currentStatus = {100, 200, deg_d_to_rad_d(d_to_deg_d(10.0)), coord, {}, lastReading};
         gu_cartesian_coordinate expectedCoord = {80, 100}; 
         gu_odometry_status expected = {400, 600, deg_d_to_rad_d(d_to_deg_d(10.0)), expectedCoord, {}};
-        gu_odometry_status actual = track_coordinate(lastReading, currentReading, currentStatus);
+        gu_odometry_status actual = track_coordinate(currentReading, currentStatus);
         compareStatus(expected, actual);
     }
 
@@ -74,11 +74,11 @@ namespace CGTEST {
         gu_odometry_reading currentReading = {400, 600, deg_d_to_rad_d(d_to_deg_d(35.0)), 0};
         gu_cartesian_coordinate coord = {73, 150};
         gu_relative_coordinate relCoord = cartesian_coord_to_rr_coord(coord); 
-        gu_odometry_status currentStatus = {100, 200, deg_d_to_rad_d(d_to_deg_d(10.0)), {}, relCoord};
+        gu_odometry_status currentStatus = {100, 200, deg_d_to_rad_d(d_to_deg_d(10.0)), {}, relCoord, lastReading};
         gu_cartesian_coordinate expectedCoord = {80, 100}; 
         gu_relative_coordinate expectedRelative = cartesian_coord_to_rr_coord(expectedCoord);
         gu_odometry_status expected = {400, 600, deg_d_to_rad_d(d_to_deg_d(10.0)), expectedCoord, expectedRelative};
-        gu_odometry_status actual = track_relative_coordinate(lastReading, currentReading, currentStatus);
+        gu_odometry_status actual = track_relative_coordinate(currentReading, currentStatus);
         compareStatus(expected, actual);
         gu_relative_coordinate actualRelative = actual.relative_coordinate;
         ASSERT_EQ(mm_u_to_i(expectedRelative.distance), mm_u_to_i(actualRelative.distance));
@@ -89,10 +89,10 @@ namespace CGTEST {
         gu_odometry_reading lastReading = {31231, 432423, deg_d_to_rad_d(d_to_deg_d(20.0)), 0};
         gu_odometry_reading currentReading = {300, 400, deg_d_to_rad_d(d_to_deg_d(15.0)), 1};
         gu_cartesian_coordinate coord = {73, 150};
-        gu_odometry_status currentStatus = {100, 20, deg_d_to_rad_d(d_to_deg_d(10.0)), coord, {}};
+        gu_odometry_status currentStatus = {100, 20, deg_d_to_rad_d(d_to_deg_d(10.0)), coord, {}, lastReading};
         gu_cartesian_coordinate expectedCoord = {66, 200};
         gu_odometry_status expected = {300, 400, deg_d_to_rad_d(d_to_deg_d(30.0)), expectedCoord, {}};
-        gu_odometry_status actual = track_self(lastReading, currentReading, currentStatus);
+        gu_odometry_status actual = track_self(currentReading, currentStatus);
         compareStatus(expected, actual);
     }
 
@@ -101,11 +101,11 @@ namespace CGTEST {
         gu_odometry_reading currentReading = {400, 600, deg_d_to_rad_d(d_to_deg_d(35.0)), 0};
         gu_cartesian_coordinate coord = {73, 150};
         gu_relative_coordinate relCoord = cartesian_coord_to_rr_coord(coord); 
-        gu_odometry_status currentStatus = {100, 200, deg_d_to_rad_d(d_to_deg_d(10.0)), {}, relCoord};
+        gu_odometry_status currentStatus = {100, 200, deg_d_to_rad_d(d_to_deg_d(10.0)), {}, relCoord, lastReading};
         gu_cartesian_coordinate expectedCoord = {66, 200}; 
         gu_relative_coordinate expectedRelative = cartesian_coord_to_rr_coord(expectedCoord);
         gu_odometry_status expected = {400, 600, deg_d_to_rad_d(d_to_deg_d(10.0)), expectedCoord, expectedRelative};
-        gu_odometry_status actual = track_self_relative(lastReading, currentReading, currentStatus);
+        gu_odometry_status actual = track_self_relative(currentReading, currentStatus);
         compareStatus(expected, actual);
         gu_relative_coordinate actualRelative = actual.relative_coordinate;
         ASSERT_EQ(mm_u_to_i(expectedRelative.distance), mm_u_to_i(actualRelative.distance));

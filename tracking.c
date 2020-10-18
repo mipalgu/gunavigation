@@ -73,8 +73,9 @@ gu_relative_coordinate calculate_difference_relative(double forward, double left
     return cartesian_coord_to_rr_coord(calculate_difference(forward, left, turn));
 }
 
-static gu_odometry_status track_with_reset(gu_odometry_reading lastReading, gu_odometry_reading currentReading, gu_odometry_status currentStatus, bool isSelf)
+static gu_odometry_status track_with_reset(gu_odometry_reading currentReading, gu_odometry_status currentStatus, bool isSelf)
 {
+    const gu_odometry_reading lastReading = currentStatus.last_reading;
     const gu_cartesian_coordinate lastRelativeLocation = currentStatus.cartesian_coordinate;
     double currentTurn = rad_d_to_d(currentReading.turn);
     const double currentForward = mm_t_to_d(currentReading.forward);
@@ -86,7 +87,7 @@ static gu_odometry_status track_with_reset(gu_odometry_reading lastReading, gu_o
     const centimetres_t x2 = isSelf ? lastRelativeLocation.x + differentialCoordinate.x : lastRelativeLocation.x - differentialCoordinate.x;
     const centimetres_t y2 = isSelf ? lastRelativeLocation.y + differentialCoordinate.y : lastRelativeLocation.y - differentialCoordinate.y;
     gu_cartesian_coordinate newCoordinate = {x2, y2};
-    gu_odometry_status newStatus = {newForward, newLeft, newTurn, newCoordinate, {}};
+    gu_odometry_status newStatus = {newForward, newLeft, newTurn, newCoordinate, {}, currentReading};
     return newStatus;
 }
 
@@ -104,32 +105,30 @@ static gu_odometry_status track_without_reset(gu_odometry_reading currentReading
     const centimetres_t x2 = isSelf ? lastRelativeLocation.x + differentialCoordinate.x : lastRelativeLocation.x - differentialCoordinate.x;
     const centimetres_t y2 = isSelf ? lastRelativeLocation.y + differentialCoordinate.y : lastRelativeLocation.y - differentialCoordinate.y;
     gu_cartesian_coordinate newCoordinate = {x2, y2};
-    gu_odometry_status newStatus = {newForward, newLeft, currentStatus.turn, newCoordinate, {}};
+    gu_odometry_status newStatus = {newForward, newLeft, currentStatus.turn, newCoordinate, {}, currentReading};
     return newStatus;
 }
 
 gu_odometry_status track_coordinate(
-    const gu_odometry_reading lastReading,
     const gu_odometry_reading currentReading,
     const gu_odometry_status currentStatus
 )
 {
-    if (currentReading.resetCounter != lastReading.resetCounter) {
-        return track_with_reset(lastReading, currentReading, currentStatus, false);
+    if (currentReading.resetCounter != currentStatus.last_reading.resetCounter) {
+        return track_with_reset(currentReading, currentStatus, false);
     }
     return track_without_reset(currentReading, currentStatus, false);
 }
 
 gu_odometry_status track_relative_coordinate(
-    const gu_odometry_reading lastReading,
     const gu_odometry_reading currentReading,
     const gu_odometry_status currentStatus
 )
 {
     gu_relative_coordinate relativeCoordinate = currentStatus.relative_coordinate;
     gu_cartesian_coordinate cartesianCoordinate = rr_coord_to_cartesian_coord(relativeCoordinate);
-    const gu_odometry_status newStatus = {currentStatus.forward, currentStatus.left, currentStatus.turn, cartesianCoordinate, {}};
-    gu_odometry_status calculatedStatus = track_coordinate(lastReading, currentReading, newStatus);
+    const gu_odometry_status newStatus = {currentStatus.forward, currentStatus.left, currentStatus.turn, cartesianCoordinate, {}, currentStatus.last_reading};
+    gu_odometry_status calculatedStatus = track_coordinate(currentReading, newStatus);
     gu_cartesian_coordinate calculatedCoordinate = calculatedStatus.cartesian_coordinate;
     gu_relative_coordinate calculatedRelCoord = cartesian_coord_to_rr_coord(calculatedCoordinate); 
     calculatedStatus.relative_coordinate = calculatedRelCoord;
@@ -137,27 +136,25 @@ gu_odometry_status track_relative_coordinate(
 }
 
 gu_odometry_status track_self(
-    const gu_odometry_reading lastReading,
     const gu_odometry_reading currentReading,
     const gu_odometry_status currentStatus
 )
 {
-   if (currentReading.resetCounter != lastReading.resetCounter) {
-       return track_with_reset(lastReading, currentReading, currentStatus, true);
+   if (currentReading.resetCounter != currentStatus.last_reading.resetCounter) {
+       return track_with_reset(currentReading, currentStatus, true);
    }
    return track_without_reset(currentReading, currentStatus, true);
 }
 
 gu_odometry_status track_self_relative(
-    const gu_odometry_reading lastReading,
     const gu_odometry_reading currentReading,
     const gu_odometry_status currentStatus
 )
 {
     gu_relative_coordinate relativeCoordinate = currentStatus.relative_coordinate;
     gu_cartesian_coordinate cartesianCoordinate = rr_coord_to_cartesian_coord(relativeCoordinate);
-    const gu_odometry_status newStatus = {currentStatus.forward, currentStatus.left, currentStatus.turn, cartesianCoordinate, {}};
-    gu_odometry_status calculatedStatus = track_self(lastReading, currentReading, newStatus);
+    const gu_odometry_status newStatus = {currentStatus.forward, currentStatus.left, currentStatus.turn, cartesianCoordinate, {}, currentStatus.last_reading};
+    gu_odometry_status calculatedStatus = track_self(currentReading, newStatus);
     gu_cartesian_coordinate calculatedCoordinate = calculatedStatus.cartesian_coordinate;
     gu_relative_coordinate calculatedRelCoord = cartesian_coord_to_rr_coord(calculatedCoordinate); 
     calculatedStatus.relative_coordinate = calculatedRelCoord;
