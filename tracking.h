@@ -90,6 +90,8 @@ typedef struct gu_odometry_status {
 
     gu_odometry_reading last_reading;
 
+    radians_d initial_turn;
+
 } gu_odometry_status;
 
 gu_cartesian_coordinate calculate_difference(double forward, double left, double turn) __attribute__((const));

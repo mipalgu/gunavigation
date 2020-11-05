@@ -88,7 +88,7 @@ static gu_odometry_status track_with_reset(gu_odometry_reading currentReading, g
     const centimetres_t x2 = isSelf ? lastRelativeLocation.x + differentialCoordinate.x : lastRelativeLocation.x - differentialCoordinate.x;
     const centimetres_t y2 = isSelf ? lastRelativeLocation.y + differentialCoordinate.y : lastRelativeLocation.y - differentialCoordinate.y;
     gu_cartesian_coordinate newCoordinate = {x2, y2};
-    gu_odometry_status newStatus = {newForward, newLeft, newTurn, newCoordinate, {}, currentReading};
+    gu_odometry_status newStatus = {newForward, newLeft, newTurn, newCoordinate, {}, currentReading, currentStatus.initial_turn};
     return newStatus;
 }
 
@@ -106,7 +106,7 @@ static gu_odometry_status track_without_reset(gu_odometry_reading currentReading
     const centimetres_t x2 = isSelf ? lastRelativeLocation.x + differentialCoordinate.x : lastRelativeLocation.x - differentialCoordinate.x;
     const centimetres_t y2 = isSelf ? lastRelativeLocation.y + differentialCoordinate.y : lastRelativeLocation.y - differentialCoordinate.y;
     gu_cartesian_coordinate newCoordinate = {x2, y2};
-    gu_odometry_status newStatus = {newForward, newLeft, currentStatus.turn, newCoordinate, {}, currentReading};
+    gu_odometry_status newStatus = {newForward, newLeft, currentStatus.turn, newCoordinate, {}, currentReading, currentStatus.initial_turn};
     return newStatus;
 }
 
@@ -128,13 +128,21 @@ gu_odometry_status track_relative_coordinate(
 {
     gu_relative_coordinate relativeCoordinate = currentStatus.relative_coordinate;
     gu_cartesian_coordinate cartesianCoordinate = rr_coord_to_cartesian_coord(relativeCoordinate);
-    const gu_odometry_status newStatus = {currentStatus.forward, currentStatus.left, currentStatus.turn, cartesianCoordinate, {}, currentStatus.last_reading};
+    const gu_odometry_status newStatus = {currentStatus.forward, currentStatus.left, currentStatus.turn, cartesianCoordinate, {}, currentStatus.last_reading, currentStatus.initial_turn};
     gu_odometry_status calculatedStatus = track_coordinate(currentReading, newStatus);
     gu_cartesian_coordinate calculatedCoordinate = calculatedStatus.cartesian_coordinate;
     gu_relative_coordinate calculatedRelCoord = cartesian_coord_to_rr_coord(calculatedCoordinate);
-    const double theta = currentReading.turn + currentStatus.turn;
+    const double theta = rad_d_to_d(currentReading.turn + currentStatus.turn - currentStatus.initial_turn);
     calculatedRelCoord.direction -= rad_d_to_deg_d(d_to_rad_d(theta));
-    const gu_odometry_status newRelStatus = {calculatedStatus.forward, calculatedStatus.left, calculatedStatus.turn, {}, calculatedRelCoord, calculatedStatus.last_reading};
+    const gu_odometry_status newRelStatus = {
+        calculatedStatus.forward,
+        calculatedStatus.left,
+        calculatedStatus.turn,
+        {},
+        calculatedRelCoord,
+        calculatedStatus.last_reading,
+        calculatedStatus.initial_turn
+    };
     return newRelStatus;
 }
 
@@ -156,11 +164,19 @@ gu_odometry_status track_self_relative(
 {
     gu_relative_coordinate relativeCoordinate = currentStatus.relative_coordinate;
     gu_cartesian_coordinate cartesianCoordinate = rr_coord_to_cartesian_coord(relativeCoordinate);
-    const gu_odometry_status newStatus = {currentStatus.forward, currentStatus.left, currentStatus.turn, cartesianCoordinate, {}, currentStatus.last_reading};
+    const gu_odometry_status newStatus = {currentStatus.forward, currentStatus.left, currentStatus.turn, cartesianCoordinate, {}, currentStatus.last_reading, currentStatus.initial_turn};
     gu_odometry_status calculatedStatus = track_self(currentReading, newStatus);
     gu_cartesian_coordinate calculatedCoordinate = calculatedStatus.cartesian_coordinate;
     gu_relative_coordinate calculatedRelCoord = cartesian_coord_to_rr_coord(calculatedCoordinate); 
-    const gu_odometry_status newRelStatus = {calculatedStatus.forward, calculatedStatus.left, calculatedStatus.turn, {}, calculatedRelCoord, calculatedStatus.last_reading};
+    const gu_odometry_status newRelStatus = {
+        calculatedStatus.forward,
+        calculatedStatus.left,
+        calculatedStatus.turn,
+        {},
+        calculatedRelCoord,
+        calculatedStatus.last_reading,
+        calculatedStatus.initial_turn
+    };
     return newRelStatus;
 }
 
