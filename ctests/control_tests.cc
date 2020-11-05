@@ -177,4 +177,46 @@ namespace CGTEST {
         ASSERT_NEAR(expected.controllerOutput, actual.controllerOutput, 0.00001);
     }
 
+    TEST_F(ControlTests, PRelControl) {
+        const gu_control val = gu_create_control(0.0, 6.0); 
+        const gu_controller controller = {0.5, 0.0, 0.0};
+        const double dt = 1.0;
+        const gu_control expected = {1.0, 5.0, 1.0, 6.0, 1.0, 0.5};
+        const gu_control actual = gu_p_control_rel(val, controller, 5.0, dt);
+        ASSERT_NEAR(expected.target, actual.target, 0.00001);
+        ASSERT_NEAR(expected.current, actual.current, 0.00001);
+        ASSERT_NEAR(expected.error, actual.error, 0.00001);
+        ASSERT_NEAR(expected.lastError, actual.lastError, 0.00001);
+        ASSERT_NEAR(expected.totalError, actual.totalError, 0.00001);
+        ASSERT_NEAR(expected.controllerOutput, actual.controllerOutput, 0.00001);
+    }
+
+    TEST_F(ControlTests, PDRelControl) {
+        const gu_control val = gu_create_control(0.0, 6.0); 
+        const gu_controller controller = {0.5, 0.1, 0.0};
+        const double dt = 0.5;
+        const gu_control expected = {1.0, 5.0, 1.0, 6.0, 0.5, -0.5};
+        const gu_control actual = gu_pd_control_rel(val, controller, 5.0, dt);
+        ASSERT_NEAR(expected.target, actual.target, 0.00001);
+        ASSERT_NEAR(expected.current, actual.current, 0.00001);
+        ASSERT_NEAR(expected.error, actual.error, 0.00001);
+        ASSERT_NEAR(expected.lastError, actual.lastError, 0.00001);
+        ASSERT_NEAR(expected.totalError, actual.totalError, 0.00001);
+        ASSERT_NEAR(expected.controllerOutput, actual.controllerOutput, 0.00001);
+    }
+
+    TEST_F(ControlTests, PIDRelControl) {
+        const gu_control val = gu_create_control(0.0, 6.0); 
+        const gu_controller controller = {0.5, 0.1, 0.1};
+        const double dt = 0.5;
+        const gu_control expected = {1.0, 5.0, 1.0, 6.0, 0.5, -0.45};
+        const gu_control actual = gu_pid_control_rel(val, controller, 5.0, dt);
+        ASSERT_NEAR(expected.target, actual.target, 0.00001);
+        ASSERT_NEAR(expected.current, actual.current, 0.00001);
+        ASSERT_NEAR(expected.error, actual.error, 0.00001);
+        ASSERT_NEAR(expected.lastError, actual.lastError, 0.00001);
+        ASSERT_NEAR(expected.totalError, actual.totalError, 0.00001);
+        ASSERT_NEAR(expected.controllerOutput, actual.controllerOutput, 0.00001);
+    }
+
 }  // namespace

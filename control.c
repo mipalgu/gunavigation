@@ -137,13 +137,43 @@ gu_control gu_create_control(const double current, const double target)
     return control;
 }
 
+gu_control gu_p_control_rel(const gu_control value, const gu_controller controller, const double reading, const double time)
+{
+    return gu_control_relative(gu_p_control(value, controller, reading, time), value);
+}
 
+gu_control gu_pd_control_rel(const gu_control value, const gu_controller controller, const double reading, const double time)
+{
+    return gu_control_relative(gu_pd_control(value, controller, reading, time), value);
+} 
 
+gu_control gu_pid_control_rel(const gu_control value, const gu_controller controller, const double reading, const double time)
+{
+    return gu_control_relative(gu_pid_control(value, controller, reading, time), value);
+}
 
+gu_control gu_control_relative(const gu_control lhs, const gu_control rhs) {
+    const gu_control difference = {
+        lhs.target - lhs.current,
+        lhs.current - rhs.current,
+        lhs.error,
+        lhs.lastError,
+        lhs.totalError,
+        lhs.controllerOutput
+    };
+    return difference;
+}
 
-
-
-
-
-
+gu_control gu_control_add(const gu_control before, const gu_control after)
+{
+    const gu_control result = {
+        before.target + after.target,
+        before.current + after.current,
+        after.error,
+        after.lastError,
+        after.totalError,
+        after.controllerOutput
+    };
+    return result;
+} 
 

@@ -126,6 +126,19 @@ gu_control gu_p_control(const gu_control value, const gu_controller controller, 
 gu_control gu_pd_control(const gu_control value, const gu_controller controller, const double reading, const double time) __attribute__((const));
 gu_control gu_pid_control(const gu_control value, const gu_controller controller, const double reading, const double time) __attribute__((const));
 
+gu_control gu_p_control_rel(const gu_control value, const gu_controller controller, const double reading, const double time) __attribute__((const));
+gu_control gu_pd_control_rel(const gu_control value, const gu_controller controller, const double reading, const double time) __attribute__((const));
+gu_control gu_pid_control_rel(const gu_control value, const gu_controller controller, const double reading, const double time) __attribute__((const));
+
+/**
+ * Operator on gu_control for lhs - rhs.
+ *
+ * @returns gu_control
+ */
+gu_control gu_control_relative(const gu_control lhs, const gu_control rhs) __attribute__((const));
+
+gu_control gu_control_add(const gu_control before, const gu_control after) __attribute__((const));
+
 double gu_proportional(const double gain, const double error) __attribute__((const));
 double gu_proportional_derivative(const double gain, const double error, const double errorGradient, const double gradientGain) __attribute__((const));
 double gu_proportional_integral_derivative(
