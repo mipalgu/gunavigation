@@ -58,12 +58,13 @@
 
 #include "tracking.h"
 #include "math.h"
+#include "stdio.h"
 
 gu_cartesian_coordinate calculate_difference(double forward, double left, double turn)
 {
     const double halfPi = rad_d_to_d(deg_d_to_rad_d(d_to_deg_d(90.0)));
-    const centimetres_t x = mm_t_to_cm_t(d_to_mm_t(forward * cos(turn) + left * cos(turn + halfPi)));
-    const centimetres_t y = mm_t_to_cm_t(d_to_mm_t(forward * sin(turn) + left * sin(turn + halfPi)));
+    const millimetres_t x = d_to_mm_t(forward * cos(turn) + left * cos(turn + halfPi));
+    const millimetres_t y = d_to_mm_t(forward * sin(turn) + left * sin(turn + halfPi));
     const gu_cartesian_coordinate differentialCoordinate = {x, y};
     return differentialCoordinate;
 }
