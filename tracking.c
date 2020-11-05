@@ -131,7 +131,9 @@ gu_odometry_status track_relative_coordinate(
     const gu_odometry_status newStatus = {currentStatus.forward, currentStatus.left, currentStatus.turn, cartesianCoordinate, {}, currentStatus.last_reading};
     gu_odometry_status calculatedStatus = track_coordinate(currentReading, newStatus);
     gu_cartesian_coordinate calculatedCoordinate = calculatedStatus.cartesian_coordinate;
-    gu_relative_coordinate calculatedRelCoord = cartesian_coord_to_rr_coord(calculatedCoordinate); 
+    gu_relative_coordinate calculatedRelCoord = cartesian_coord_to_rr_coord(calculatedCoordinate);
+    const double theta = currentReading.turn + currentStatus.turn;
+    calculatedRelCoord.direction -= rad_d_to_deg_d(d_to_rad_d(theta));
     const gu_odometry_status newRelStatus = {calculatedStatus.forward, calculatedStatus.left, calculatedStatus.turn, {}, calculatedRelCoord, calculatedStatus.last_reading};
     return newRelStatus;
 }

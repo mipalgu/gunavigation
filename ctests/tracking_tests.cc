@@ -97,7 +97,7 @@ namespace CGTEST {
         gu_relative_coordinate relCoord = cartesian_coord_to_rr_coord(coord); 
         gu_odometry_status currentStatus = {100, 200, deg_d_to_rad_d(d_to_deg_d(10.0)), {}, relCoord, lastReading};
         gu_cartesian_coordinate expectedCoord = {801, 1005}; 
-        gu_relative_coordinate expectedRelative = cartesian_coord_to_rr_coord(expectedCoord);
+        gu_relative_coordinate expectedRelative = {51.444631622 - 45.0, 1285};
         gu_odometry_status expected = {400, 600, deg_d_to_rad_d(d_to_deg_d(10.0)), {}, expectedRelative, currentReading};
         gu_odometry_status actual = track_relative_coordinate(currentReading, currentStatus);
         compareStatusRel(expected, actual);
