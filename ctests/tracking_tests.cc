@@ -26,6 +26,23 @@ namespace CGTEST {
         ASSERT_EQ(mm_t_to_i(expected.last_reading.forward), mm_t_to_i(actual.last_reading.forward));
         ASSERT_EQ(mm_t_to_i(expected.last_reading.left), mm_t_to_i(actual.last_reading.left));
         ASSERT_NEAR(rad_d_to_d(expected.last_reading.turn), rad_d_to_d(actual.last_reading.turn), 0.00001);
+        ASSERT_EQ(actual.relative_coordinate.distance, NULL);
+        ASSERT_EQ(actual.relative_coordinate.direction, NULL);
+    }
+
+    static void compareStatusRel(gu_odometry_status expected, gu_odometry_status actual) {
+        gu_relative_coordinate expectedCoord = expected.relative_coordinate;
+        gu_relative_coordinate actualCoord = actual.relative_coordinate;
+        ASSERT_EQ(mm_t_to_i(expected.forward), mm_t_to_i(actual.forward));
+        ASSERT_EQ(mm_t_to_i(expected.left), mm_t_to_i(actual.left));
+        ASSERT_NEAR(rad_d_to_d(expected.turn), rad_d_to_d(actual.turn), 0.00001);
+        ASSERT_EQ(mm_u_to_i(expectedCoord.distance), mm_u_to_i(actualCoord.distance));
+        ASSERT_NEAR(deg_d_to_d(expectedCoord.direction), deg_d_to_d(actualCoord.direction), 0.00001);
+        ASSERT_EQ(mm_t_to_i(expected.last_reading.forward), mm_t_to_i(actual.last_reading.forward));
+        ASSERT_EQ(mm_t_to_i(expected.last_reading.left), mm_t_to_i(actual.last_reading.left));
+        ASSERT_NEAR(rad_d_to_d(expected.last_reading.turn), rad_d_to_d(actual.last_reading.turn), 0.00001);
+        ASSERT_EQ(actual.cartesian_coordinate.x, NULL);
+        ASSERT_EQ(actual.cartesian_coordinate.y, NULL);
     }
 
     TEST_F(TrackingTests, CalculateDifference) {
@@ -80,12 +97,9 @@ namespace CGTEST {
         gu_odometry_status currentStatus = {100, 200, deg_d_to_rad_d(d_to_deg_d(10.0)), {}, relCoord, lastReading};
         gu_cartesian_coordinate expectedCoord = {80, 100}; 
         gu_relative_coordinate expectedRelative = cartesian_coord_to_rr_coord(expectedCoord);
-        gu_odometry_status expected = {400, 600, deg_d_to_rad_d(d_to_deg_d(10.0)), expectedCoord, expectedRelative, currentReading};
+        gu_odometry_status expected = {400, 600, deg_d_to_rad_d(d_to_deg_d(10.0)), {}, expectedRelative, currentReading};
         gu_odometry_status actual = track_relative_coordinate(currentReading, currentStatus);
-        compareStatus(expected, actual);
-        gu_relative_coordinate actualRelative = actual.relative_coordinate;
-        ASSERT_EQ(mm_u_to_i(expectedRelative.distance), mm_u_to_i(actualRelative.distance));
-        ASSERT_NEAR(deg_d_to_d(expectedRelative.direction), deg_d_to_d(actualRelative.direction), 0.00001);
+        compareStatusRel(expected, actual);
     }
 
     TEST_F(TrackingTests, TrackSelf) {
@@ -107,12 +121,9 @@ namespace CGTEST {
         gu_odometry_status currentStatus = {100, 200, deg_d_to_rad_d(d_to_deg_d(10.0)), {}, relCoord, lastReading};
         gu_cartesian_coordinate expectedCoord = {66, 200}; 
         gu_relative_coordinate expectedRelative = cartesian_coord_to_rr_coord(expectedCoord);
-        gu_odometry_status expected = {400, 600, deg_d_to_rad_d(d_to_deg_d(10.0)), expectedCoord, expectedRelative, currentReading};
+        gu_odometry_status expected = {400, 600, deg_d_to_rad_d(d_to_deg_d(10.0)), {}, expectedRelative, currentReading};
         gu_odometry_status actual = track_self_relative(currentReading, currentStatus);
-        compareStatus(expected, actual);
-        gu_relative_coordinate actualRelative = actual.relative_coordinate;
-        ASSERT_EQ(mm_u_to_i(expectedRelative.distance), mm_u_to_i(actualRelative.distance));
-        ASSERT_NEAR(deg_d_to_d(expectedRelative.direction), deg_d_to_d(actualRelative.direction), 0.00001);
+        compareStatusRel(expected, actual);
 
     }
 
