@@ -98,18 +98,31 @@ static gu_odometry_status track(gu_odometry_reading currentReading, gu_odometry_
     return newStatus;
 }
 
+static radians_d get_incremental_angle(gu_odometry_reading currentReading, gu_odometry_reading lastReading)
+{
+    if (currentReading.resetCounter != lastReading.resetCounter) {
+        return currentReading.turn;
+    }
+    return currentReading.turn - lastReading.turn;
+}
+
 static gu_odometry_status track_relative(gu_odometry_reading currentReading, gu_odometry_status currentStatus, bool isSelf)
 {
     const gu_cartesian_coordinate cartesianCoordinate = rr_coord_to_cartesian_coord(currentStatus.relative_coordinate);
-    const gu_odometry_status newStatus = {cartesianCoordinate, {}, currentStatus.last_reading};
-    const gu_odometry_status calculatedStatus = track(currentReading, newStatus, isSelf);
-    const gu_relative_coordinate calculatedRelCoord = cartesian_coord_to_rr_coord(calculatedStatus.cartesian_coordinate);
-    const gu_odometry_status newRelStatus = {
-        {},
-        calculatedRelCoord,
-        calculatedStatus.last_reading
-    };
-    return newRelStatus;
+    if (isSelf) {
+        const gu_odometry_status newStatus = {cartesianCoordinate, {}, currentStatus.last_reading};
+        const gu_odometry_status calculatedStatus = track(currentReading, newStatus, true);
+        const gu_relative_coordinate calculatedRelCoord = cartesian_coord_to_rr_coord(calculatedStatus.cartesian_coordinate);
+        const gu_odometry_status newRelStatus = {{}, calculatedRelCoord, calculatedStatus.last_reading};
+        return newRelStatus;
+    }
+    const gu_odometry_status newStatus = {{0, 0}, {}, currentStatus.last_reading};
+    const gu_odometry_status calculatedStatus = track(currentReading, newStatus, true);
+    const degrees_t heading = rad_d_to_deg_t(get_incremental_angle(currentReading, currentStatus.last_reading));
+    const gu_field_coordinate source = {calculatedStatus.cartesian_coordinate, heading};
+    const gu_relative_coordinate result = field_coord_to_rr_coord_to_target(source, cartesianCoordinate);
+    const gu_odometry_status status = {{}, result, calculatedStatus.last_reading};
+    return status;
 }
 
 
