@@ -78,19 +78,11 @@ typedef struct gu_odometry_reading {
 } gu_odometry_reading;
 
 typedef struct gu_odometry_status {
-    millimetres_t forward;
-
-    millimetres_t left;
-
-    radians_d turn;
-
     gu_cartesian_coordinate cartesian_coordinate;
 
     gu_relative_coordinate relative_coordinate;
 
     gu_odometry_reading last_reading;
-
-    radians_d initial_turn;
 
 } gu_odometry_status;
 
@@ -117,6 +109,10 @@ gu_odometry_status track_self_relative(
     const gu_odometry_reading currentReading,
     const gu_odometry_status currentStatus
 ) __attribute__((const));
+
+gu_odometry_status create_cartesian_status(const gu_odometry_reading initialReading, const gu_cartesian_coordinate object) __attribute__((const));
+
+gu_odometry_status create_relative_status(const gu_odometry_reading initialReading, const gu_relative_coordinate object) __attribute__((const));
 
 #ifdef __cplusplus
 }
