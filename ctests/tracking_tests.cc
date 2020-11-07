@@ -79,7 +79,7 @@ namespace CGTEST {
         const gu_relative_coordinate differentialRel = cartesian_coord_to_rr_coord(differentialCoord);
         const gu_cartesian_coordinate expectedTarget = {544, 1036}; //290 - 104 = 186 |||| 78 + 386 = 464
         gu_relative_coordinate expectedTargetRel = cartesian_coord_to_rr_coord(expectedTarget);
-        const gu_field_coordinate expectedSelf = {{fieldCoord.position.x + 186, fieldCoord.position.y + 464}, deg_d_to_deg_t(differentialRel.direction) + fieldCoord.heading};
+        const gu_field_coordinate expectedSelf = {{fieldCoord.position.x + 186, fieldCoord.position.y + 464}, deg_d_to_deg_t(15.0) + fieldCoord.heading};
         expectedTargetRel.direction -= deg_t_to_deg_d(expectedSelf.heading);
         const gu_odometry_status expected = {expectedSelf, expectedTargetRel, currentReading};
         const gu_odometry_status actual = track(currentReading, currentStatus);
@@ -98,7 +98,7 @@ namespace CGTEST {
         const gu_relative_coordinate differentialRel = cartesian_coord_to_rr_coord(differentialCoord);
         const gu_cartesian_coordinate expectedTarget = {544, 1036}; //290 - 104 = 186 |||| 78 + 386 = 464
         gu_relative_coordinate expectedTargetRel = cartesian_coord_to_rr_coord(expectedTarget);
-        const gu_field_coordinate expectedSelf = {{fieldCoord.position.x + 186, fieldCoord.position.y + 464}, deg_d_to_deg_t(differentialRel.direction) + fieldCoord.heading};
+        const gu_field_coordinate expectedSelf = {{fieldCoord.position.x + 186, fieldCoord.position.y + 464}, deg_d_to_deg_t(15.0) + fieldCoord.heading};
         expectedTargetRel.direction -= deg_t_to_deg_d(expectedSelf.heading);
         const gu_odometry_status expected = {expectedSelf, expectedTargetRel, currentReading};
         const gu_odometry_status actual = track(currentReading, currentStatus);
@@ -119,7 +119,7 @@ namespace CGTEST {
         gu_relative_coordinate expectedTargetRel = cartesian_coord_to_rr_coord(expectedTarget);
         const gu_field_coordinate expectedSelf = {
             {fieldCoord.position.x + differentialCoord.x, fieldCoord.position.y + differentialCoord.y},
-            deg_d_to_deg_t(differentialRel.direction)
+            deg_d_to_deg_t(15.0 + 30.0)
         };
         expectedTargetRel.direction -= deg_t_to_deg_d(expectedSelf.heading);
         const gu_odometry_status expected = {expectedSelf, expectedTargetRel, currentReading};
@@ -141,13 +141,41 @@ namespace CGTEST {
         gu_relative_coordinate expectedTargetRel = cartesian_coord_to_rr_coord(expectedTarget);
         const gu_field_coordinate expectedSelf = {
             {fieldCoord.position.x + differentialCoord.x, fieldCoord.position.y + differentialCoord.y},
-            deg_d_to_deg_t(differentialRel.direction)
+            deg_d_to_deg_t(15.0) + fieldCoord.heading
         };
         expectedTargetRel.direction -= deg_t_to_deg_d(expectedSelf.heading);
         const gu_odometry_status expected = {expectedSelf, expectedTargetRel, currentReading};
         const gu_odometry_status actual = track(currentReading, currentStatus);
         //print_status(actual);
         compareStatus(expected, actual);
+    }
+
+    TEST_F(TrackingTests, TrackAnotherWithoutReset)
+    {
+        const double turn = deg_d_to_rad_d(d_to_deg_d(4.000000476837158));
+        const gu_odometry_reading lastReading = {0, 0, deg_d_to_rad_d(d_to_deg_d(0.0)), 0};
+        const gu_odometry_reading currentReading = {5, 5, turn, 0};
+        const gu_field_coordinate fieldCoord = {{0, 0}, 0};
+        const gu_relative_coordinate target = {90.0, 3000};
+        const gu_cartesian_coordinate coord = rr_coord_to_cartesian_coord(target);
+        const gu_odometry_status currentStatus = {fieldCoord, target, lastReading};
+        const gu_cartesian_coordinate differentialCoord = {
+            d_to_mm_t(5.0 * cos(turn) + 5.0 * cos(turn + rad_d_to_d(deg_d_to_rad_d(d_to_deg_d(90.0))))),
+            d_to_mm_t(5.0 * sin(turn) + 5.0 * sin(turn + rad_d_to_d(deg_d_to_rad_d(d_to_deg_d(90.0)))))
+        };
+        const gu_relative_coordinate differentialRel = cartesian_coord_to_rr_coord(differentialCoord);
+        const gu_cartesian_coordinate expectedTarget = {coord.x - differentialCoord.x - fieldCoord.position.x, coord.y - differentialCoord.y - fieldCoord.position.y}; 
+        gu_relative_coordinate expectedTargetRel = cartesian_coord_to_rr_coord(expectedTarget);
+        const gu_field_coordinate expectedSelf = {
+            {fieldCoord.position.x + differentialCoord.x, fieldCoord.position.y + differentialCoord.y},
+            rad_d_to_deg_t(d_to_rad_d(turn))
+        };
+        expectedTargetRel.direction -= deg_t_to_deg_d(expectedSelf.heading);
+        const gu_odometry_status expected = {expectedSelf, expectedTargetRel, currentReading};
+        const gu_odometry_status actual = track(currentReading, currentStatus);
+        //print_status(actual);
+        compareStatus(expected, actual);
+
     }
 
     

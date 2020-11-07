@@ -83,20 +83,21 @@ static gu_cartesian_coordinate check_counter_and_calculate_difference(gu_odometr
     );
 }
 
-/*static radians_d get_incremental_angle(gu_odometry_reading currentReading, gu_odometry_reading lastReading)
+static radians_d get_incremental_angle(gu_odometry_reading currentReading, gu_odometry_reading lastReading)
 {
     if (currentReading.resetCounter != lastReading.resetCounter) {
         return currentReading.turn;
     }
     return currentReading.turn - lastReading.turn;
-}*/
+}
 
 gu_odometry_status track(const gu_odometry_reading currentReading, const gu_odometry_status currentStatus)
 {
     const gu_field_coordinate originalPosition = currentStatus.my_position;
     const gu_cartesian_coordinate differentialCoordinate = check_counter_and_calculate_difference(currentReading, currentStatus);
     gu_relative_coordinate differentialRelative = cartesian_coord_to_rr_coord(differentialCoordinate);
-    const degrees_t newHeading = deg_d_to_deg_t(differentialRelative.direction);
+    const radians_d incrementalAngle = get_incremental_angle(currentReading, currentStatus.last_reading);
+    const degrees_t newHeading = originalPosition.heading + rad_d_to_deg_t(incrementalAngle);
     differentialRelative.direction -= deg_t_to_deg_d(originalPosition.heading);
     const gu_field_coordinate newCoordinate = rr_coord_to_field_coord_from_source(differentialRelative, originalPosition, newHeading);
     const gu_cartesian_coordinate targetLocation = rr_coord_to_cartesian_coord_from_field(currentStatus.target, originalPosition);
