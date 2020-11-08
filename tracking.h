@@ -78,45 +78,27 @@ typedef struct gu_odometry_reading {
 } gu_odometry_reading;
 
 typedef struct gu_odometry_status {
-    millimetres_t forward;
+    gu_field_coordinate my_position;
 
-    millimetres_t left;
-
-    radians_d turn;
-
-    gu_cartesian_coordinate cartesian_coordinate;
-
-    gu_relative_coordinate relative_coordinate;
+    gu_relative_coordinate target;
 
     gu_odometry_reading last_reading;
 
-    radians_d initial_turn;
-
 } gu_odometry_status;
 
-gu_cartesian_coordinate calculate_difference(double forward, double left, double turn) __attribute__((const));
+/**
+ * All Angles are in radians.
+ */
+gu_cartesian_coordinate calculate_difference(double forward, double left, double turn, double originalHeading) __attribute__((const));
 
-gu_relative_coordinate calculate_difference_relative(double forward, double left, double turn) __attribute__((const));
-
-gu_odometry_status track_coordinate(
+gu_odometry_status track(
     const gu_odometry_reading currentReading,
     const gu_odometry_status currentStatus
 ) __attribute__((const));
 
-gu_odometry_status track_relative_coordinate(
-    const gu_odometry_reading currentReading,
-    const gu_odometry_status currentStatus
-) __attribute__((const));
+gu_odometry_status create_status(const gu_odometry_reading initialReading, const gu_relative_coordinate object) __attribute__((const));
 
-gu_odometry_status track_self(
-    const gu_odometry_reading currentReading,
-    const gu_odometry_status currentStatus
-) __attribute__((const));
-
-gu_odometry_status track_self_relative(
-    const gu_odometry_reading currentReading,
-    const gu_odometry_status currentStatus
-) __attribute__((const));
+gu_odometry_status create_status_for_self(const gu_odometry_reading initialReading) __attribute__((const));
 
 #ifdef __cplusplus
 }
