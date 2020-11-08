@@ -100,6 +100,8 @@ gu_odometry_status create_status(const gu_odometry_reading initialReading, const
 
 gu_odometry_status create_status_for_self(const gu_odometry_reading initialReading) __attribute__((const));
 
+gu_relative_coordinate update_target_from_movement(const gu_field_coordinate oldPosition, const gu_field_coordinate newPosition, const gu_relative_coordinate oldTarget) __attribute__((const));
+
 #ifdef __cplusplus
 }
 #endif

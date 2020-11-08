@@ -119,3 +119,10 @@ gu_odometry_status create_status_for_self(const gu_odometry_reading initialReadi
     return create_status(initialReading, self);
 }
 
+
+gu_relative_coordinate update_target_from_movement(const gu_field_coordinate oldPosition, const gu_field_coordinate newPosition, const gu_relative_coordinate oldTarget)
+{
+    const gu_cartesian_coordinate oldCoordinate = rr_coord_to_cartesian_coord_from_field(oldTarget, oldPosition);
+    return field_coord_to_rr_coord_to_target(newPosition, oldCoordinate);
+}
+
