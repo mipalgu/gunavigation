@@ -63,6 +63,8 @@
 extern "C" {
 #endif
 
+#include <gucoordinates/gucoordinates.h>
+
 typedef struct gu_control {
     
     /**
@@ -113,6 +115,22 @@ typedef struct gu_controller {
 
 } gu_controller;
 
+typedef struct gu_odometry_control {
+
+    gu_control forward_control;
+
+    gu_controller forward_controller;
+
+    gu_control left_control;
+
+    gu_controller left_controller;
+
+    gu_control turn_control;
+
+    gu_controller turn_controller;
+
+} gu_odometry_control;
+
 gu_control gu_create_control(const double current, const double target) __attribute__((const));
 
 /**
@@ -148,6 +166,22 @@ double gu_proportional_integral_derivative(
     const double gradientGain,
     const double errorTotal,
     const double integralGain
+) __attribute__((const));
+
+gu_odometry_control position_to_odometry_control(
+    const gu_relative_coordinate target,
+    const gu_controller forwardController,
+    const gu_controller leftController,
+    const gu_controller turnController
+) __attribute__((const));
+
+gu_odometry_control position_to_odometry_control_with_heading(
+    const gu_field_coordinate myPosition,
+    const gu_relative_coordinate target,
+    const degrees_t heading,
+    const gu_controller forwardController,
+    const gu_controller leftController,
+    const gu_controller turnController
 ) __attribute__((const));
 
 #ifdef __cplusplus

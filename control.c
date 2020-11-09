@@ -57,6 +57,7 @@
  */
 
 #include "control.h"
+#include "math.h"
 
 typedef enum gu_control_algorithm {
     ControlProportional,
@@ -176,4 +177,58 @@ gu_control gu_control_add(const gu_control before, const gu_control after)
     };
     return result;
 } 
+
+
+gu_odometry_control position_to_odometry_control_with_heading(
+    const gu_field_coordinate myPosition,
+    const gu_relative_coordinate target,
+    const degrees_t heading,
+    const gu_controller forwardController,
+    const gu_controller leftController,
+    const gu_controller turnController
+)
+{
+    const gu_control forwardControl = gu_create_control(-mm_u_to_d(target.distance), 0.0);
+    const gu_control turnControl = gu_create_control(-rad_d_to_d(deg_d_to_rad_d(target.direction)), 0.0);
+    const double angle = rad_d_to_d(deg_t_to_rad_d(heading - myPosition.heading));
+    const double leftAmount = -mm_d_to_d(mm_u_to_mm_d(target.distance)) * sin(angle);
+    const gu_control leftControl = gu_create_control(leftAmount, 0.0);
+    const gu_odometry_control odometry = {forwardControl, forwardController, leftControl, leftController, turnControl, turnController};
+    return odometry;
+}
+
+gu_odometry_control position_to_odometry_control(
+    const gu_relative_coordinate target,
+    const gu_controller forwardController,
+    const gu_controller leftController,
+    const gu_controller turnController
+)
+{
+    const gu_control forwardControl = gu_create_control(-mm_u_to_d(target.distance), 0.0);
+    const gu_control turnControl = gu_create_control(-rad_d_to_d(deg_d_to_rad_d(target.direction)), 0.0);
+    const double angle = rad_d_to_d(deg_d_to_rad_d(target.direction));
+    const double leftAmount = -mm_d_to_d(mm_u_to_mm_d(target.distance)) * sin(angle);
+    const gu_control leftControl = gu_create_control(leftAmount, 0.0);
+    const gu_odometry_control odometry = {forwardControl, forwardController, leftControl, leftController, turnControl, turnController};
+    return odometry;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
