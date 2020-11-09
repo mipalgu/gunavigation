@@ -1,9 +1,9 @@
 /*
- * gunavigation.h 
- * gunavigation
+ * gucoordinates_tests.hpp 
+ * ctests 
  *
- * Created by Callum McColl on 20/12/2019.
- * Copyright © 2019 Callum McColl. All rights reserved.
+ * Created by Callum McColl on 23/06/2020.
+ * Copyright © 2020 Callum McColl. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -56,13 +56,39 @@
  *
  */
 
-#ifndef GUNAVIGATION_H
-#define GUNAVIGATION_H
+#ifndef GUNAVIGATION_TESTS_HPP
+#define GUNAVIGATION_TESTS_HPP
 
-//#include "arcs.h"
-#include "control.h"
-#include "tracking.h"
-#include "sightings.h"
-#include "filtering.h"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+#pragma clang diagnostic ignored "-Wfloat-equal"
+#pragma clang diagnostic ignored "-Wsign-compare"
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
+#pragma clang diagnostic ignored "-Wshift-sign-overflow"
+#pragma clang diagnostic ignored "-Wused-but-marked-unused"
+#pragma clang diagnostic ignored "-Wundef"
+#pragma clang diagnostic ignored "-Wc++98-compat"
+#pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
+#pragma clang diagnostic ignored "-Wc++11-long-long"
+#pragma clang diagnostic ignored "-Wc++11-extensions"
+#pragma clang diagnostic ignored "-Wdeprecated"
+#include <gtest/gtest.h>
+#pragma clang diagnostic pop
 
-#endif  /* GUNAVIGATION_H */
+#include "../gunavigation.h"
+#include <math.h>
+
+namespace CGTEST {
+
+    class GUNavigationTests: public ::testing::Test {
+        protected:
+
+        virtual void SetUp() {}
+
+        virtual void TearDown() {}
+
+    };
+
+}
+
+#endif  /* GUCOORDINATES_TESTS_HPP */

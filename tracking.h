@@ -1,9 +1,9 @@
 /*
- * gunavigation.h 
- * gunavigation
+ * tracking.h 
+ * gunavigation 
  *
- * Created by Callum McColl on 20/12/2019.
- * Copyright © 2019 Callum McColl. All rights reserved.
+ * Created by Morgan McColl on 12/10/2020.
+ * Copyright © 2020 Morgan McColl. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -20,7 +20,7 @@
  * 3. All advertising materials mentioning features or use of this
  *    software must display the following acknowledgement:
  *
- *        This product includes software developed by Callum McColl.
+ *        This product includes software developed by Morgan McColl.
  *
  * 4. Neither the name of the author nor the names of contributors
  *    may be used to endorse or promote products derived from this
@@ -56,13 +56,54 @@
  *
  */
 
-#ifndef GUNAVIGATION_H
-#define GUNAVIGATION_H
+#ifndef TRACKING_H
+#define TRACKING_H
 
-//#include "arcs.h"
-#include "control.h"
-#include "tracking.h"
-#include "sightings.h"
-#include "filtering.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif  /* GUNAVIGATION_H */
+#include <guunits/guunits.h>
+#include <gucoordinates/gucoordinates.h>
+
+typedef struct gu_odometry_reading {
+    millimetres_t forward;
+
+    millimetres_t left;
+
+    radians_d turn;
+
+    uint8_t resetCounter;
+
+} gu_odometry_reading;
+
+typedef struct gu_odometry_status {
+    gu_field_coordinate my_position;
+
+    gu_relative_coordinate target;
+
+    gu_odometry_reading last_reading;
+
+} gu_odometry_status;
+
+/**
+ * All Angles are in radians.
+ */
+gu_cartesian_coordinate calculate_difference(double forward, double left, double turn, double originalHeading) __attribute__((const));
+
+gu_odometry_status track(
+    const gu_odometry_reading currentReading,
+    const gu_odometry_status currentStatus
+) __attribute__((const));
+
+gu_odometry_status create_status(const gu_odometry_reading initialReading, const gu_relative_coordinate object) __attribute__((const));
+
+gu_odometry_status create_status_for_self(const gu_odometry_reading initialReading) __attribute__((const));
+
+gu_relative_coordinate update_target_from_movement(const gu_field_coordinate oldPosition, const gu_field_coordinate newPosition, const gu_relative_coordinate oldTarget) __attribute__((const));
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif  /* TRACKING_H */
