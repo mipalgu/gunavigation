@@ -32,6 +32,6 @@ test:
 clean-build-dir:
 	rm -rf ${BUILDDIR}
 
-.include "../../../mk/mipal.mk"
+.include "../../../../mk/mipal.mk"
 
 LDFLAGS=

@@ -17,7 +17,7 @@ build-test: clean host
 
 test:
 
-.include "../../../mk/c++17.mk"
-.include "../../../mk/mipal.mk"
+.include "../../../../mk/c++17.mk"
+.include "../../../../mk/mipal.mk"
 
 LDFLAGS=
