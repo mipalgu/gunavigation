@@ -59,11 +59,11 @@
 #ifndef CONTROL_H
 #define CONTROL_H
 
+#include <gucoordinates/gucoordinates.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <gucoordinates/gucoordinates.h>
 
 typedef struct gu_control {
     

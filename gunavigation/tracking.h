@@ -59,12 +59,12 @@
 #ifndef TRACKING_H
 #define TRACKING_H
 
+#include <guunits/guunits.h>
+#include <gucoordinates/gucoordinates.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <guunits/guunits.h>
-#include <gucoordinates/gucoordinates.h>
 
 typedef struct gu_odometry_reading {
     millimetres_t forward;
