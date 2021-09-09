@@ -1,0 +1,3 @@
+[submodule "swift_GUNavigation"]
+	path = swift_GUNavigation
+	url = https://github.com/mipalgu/swift_GUNavigation.git
